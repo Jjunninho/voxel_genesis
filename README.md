@@ -2,13 +2,15 @@
 
 O **Voxel Genesis** é um editor de voxels 3D procedurais que roda diretamente no navegador. Ele combina o poder da renderização em tempo real com Inteligência Artificial para permitir a criação de geometrias complexas, texturas personalizadas e modelos 3D através de linguagem natural.
 
-![Demonstração do Projeto 0](https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem0.jpg)
-![Demonstração do Projeto 1](https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem1.jpg)
-![Demonstração do Projeto 2](https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem2.jpg)
-![Demonstração do Projeto 3](https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem3.jpg)
-![Demonstração do Projeto 4](https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem4.jpg)
-![Demonstração do Projeto 5](https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem5.jpg)
-![Demonstração do Projeto 6](https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem6.jpg)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem0.jpg" width="32%">
+  <img src="https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem1.jpg" width="32%">
+  <img src="https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem2.jpg" width="32%">
+  <img src="https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem3.jpg" width="32%">
+  <img src="https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem4.jpg" width="32%">
+  <img src="https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem5.jpg" width="32%">
+  <img src="https://raw.githubusercontent.com/Jjunninho/voxel_genesis/main/imagens/imagem6.jpg" width="32%">
+</p>
 
 ## 🚀 Funcionalidades Principais
 
