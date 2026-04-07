@@ -1,0 +1,213 @@
+/* ====================================================================
+   🤖 SEÇÃO DE IA - ESTILOS
+   ==================================================================== */
+
+.ai-section {
+    background: linear-gradient(135deg, rgba(42, 42, 42, 0.95), rgba(20, 20, 40, 0.95));
+    border: 2px solid #00ff88;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 255, 136, 0.15);
+}
+
+.ai-header h2 {
+    color: #00ff88;
+    font-size: 22px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ai-header p {
+    color: #aaa;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+/* Campo de Input */
+.ai-input-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+#aiPromptInput {
+    flex: 1;
+    background: rgba(30, 30, 30, 0.8);
+    border: 2px solid #444;
+    border-radius: 10px;
+    padding: 15px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+    transition: all 0.3s;
+}
+
+#aiPromptInput:focus {
+    outline: none;
+    border-color: #00ff88;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+#aiPromptInput::placeholder {
+    color: #666;
+}
+
+.ai-generate-btn {
+    min-width: 140px;
+    height: auto;
+    background: linear-gradient(135deg, #00ff88, #00aaff);
+    color: #1a1a1a;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px 20px;
+}
+
+.ai-generate-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+}
+
+.ai-generate-btn:disabled {
+    background: #444;
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Sugestões */
+.ai-suggestions {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.suggestions-label {
+    color: #00ff88;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+.suggestion-btn {
+    background: rgba(30, 30, 30, 0.8);
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: #aaa;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.suggestion-btn:hover {
+    background: rgba(0, 255, 136, 0.1);
+    border-color: #00ff88;
+    color: #fff;
+    transform: translateX(5px);
+}
+
+/* Status de Geração */
+.ai-status {
+    margin-top: 15px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.ai-status.hidden {
+    display: none;
+}
+
+.ai-status.info {
+    background: rgba(0, 170, 255, 0.15);
+    border: 1px solid #00aaff;
+    color: #00aaff;
+}
+
+.ai-status.success {
+    background: rgba(0, 255, 136, 0.15);
+    border: 1px solid #00ff88;
+    color: #00ff88;
+}
+
+.ai-status.error {
+    background: rgba(255, 68, 68, 0.15);
+    border: 1px solid #ff4444;
+    color: #ff4444;
+}
+
+.ai-status.warning {
+    background: rgba(255, 170, 0, 0.15);
+    border: 1px solid #ffaa00;
+    color: #ffaa00;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading Animation */
+.ai-generate-btn.loading::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid #1a1a1a;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .ai-input-container {
+        flex-direction: column;
+    }
+
+    .ai-generate-btn {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .suggestions-grid {
+        grid-template-columns: 1fr;
+    }
+}

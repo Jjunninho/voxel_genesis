@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/creator.css">
+    
+    <title>🌌 Voxel Genesis IA - Editor 3D</title> 
+
+    </head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>🌌 Voxel Genesis IA</h2>
+                <p>Studios v2.5</p>
+            </div>
+    
+    <div class="context-area">
+        <!-- 🔹 CAMPO ÚNICO COMPACTO DE IA -->
+        <div class="input-group">
+            <label>💬 Descreva o que quer criar:</label>
+            <textarea 
+                id="contextInput" 
+                placeholder="Ex: Casa com telhado triangular, porta vermelha e 2 janelas azuis. Adicione uma árvore verde ao lado."
+                style="min-height: 70px;"
+            ></textarea>
+        </div>
+
+        <div class="button-group">
+            <button class="btn" onclick="generateFromAI()">✨ Gerar com IA</button>
+            <button class="btn btn-secondary" onclick="clearScene()">🗑️ Limpar</button>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+        
+
+        
+        <!-- 🔹 SEÇÃO COLAPSÁVEL: GRID -->
+        <div style="margin-top: 12px; border-top: 1px solid #3a3a3a; padding-top: 12px;">
+            <div class="section-header" onclick="toggleSection('gridSection')">
+                <h4>📐 Precisão do Grid</h4>
+                <span class="section-toggle" id="gridToggle">▼</span>
+            </div>
+            
+			<div class="section-content" id="gridSection">
+				<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+					<button onclick="setGridResolution('auto')" class="resolution-btn active">✨ Auto</button>
+					<button onclick="setGridResolution(1.0)" class="resolution-btn">1.0</button>
+					<button onclick="setGridResolution(0.5)" class="resolution-btn">0.5</button>
+					<button onclick="setGridResolution(0.25)" class="resolution-btn">0.25</button>
+					<button onclick="setGridResolution(0.1)" class="resolution-btn">0.1</button>
+				</div>
+			</div>
+        </div>
+        
+        <!-- 🔹 SELETOR DE PINCEL -->
+        <div class="input-group">
+            <label>🖌️ Pincel:</label>
+            <div class="brush-selector">
+                <button class="brush-display" onclick="toggleBrushMenu()">
+                    <span id="currentBrushIcon">⬛</span>
+                    <span id="currentBrushName">Cubo</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                
+                <!-- Menu dropdown dos pincéis (mantém a estrutura original) -->
+                <div id="brushMenu" class="brush-menu">
+                    <div class="brush-category">
+                        <div class="category-label">Básicas</div>
+                        <div class="brush-grid">
+                            <div class="brush-option active" data-brush="cube" onclick="selectBrush('cube')">
+                                <span class="brush-icon">⬛</span>
+                                <span class="brush-name">Cubo</span>
+                            </div>
+                            <div class="brush-option" data-brush="sphere" onclick="selectBrush('sphere')">
+                                <span class="brush-icon">⚪</span>
+                                <span class="brush-name">Esfera</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="brush-category">
+                        <div class="category-label">Cilíndricas</div>
+                        <div class="brush-grid">
+                            <div class="brush-option" data-brush="cylinder" onclick="selectBrush('cylinder')">
+                                <span class="brush-icon">🛢️</span>
+                                <span class="brush-name">Cilindro</span>
+                            </div>
+                            <div class="brush-option" data-brush="cone" onclick="selectBrush('cone')">
+                                <span class="brush-icon">🔺</span>
+                                <span class="brush-name">Cone</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="brush-category">
+                        <div class="category-label">Especiais</div>
+                        <div class="brush-grid">
+                            <div class="brush-option" data-brush="pyramid" onclick="selectBrush('pyramid')">
+                                <span class="brush-icon">🔺</span>
+                                <span class="brush-name">Pirâmide</span>
+                            </div>
+                            <div class="brush-option" data-brush="prism" onclick="selectBrush('prism')">
+                                <span class="brush-icon">🔶</span>
+                                <span class="brush-name">Prisma</span>
+                            </div>
+                            <div class="brush-option" data-brush="torus" onclick="selectBrush('torus')">
+                                <span class="brush-icon">🍩</span>
+                                <span class="brush-name">Toro</span>
+                            </div>
+                            <div class="brush-option" data-brush="capsule" onclick="selectBrush('capsule')">
+                                <span class="brush-icon">💊</span>
+                                <span class="brush-name">Cápsula</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="brush-category">
+                        <div class="category-label">Poliedros</div>
+                        <div class="brush-grid">
+                            <div class="brush-option" data-brush="tetrahedron" onclick="selectBrush('tetrahedron')">
+                                <span class="brush-icon">▲</span>
+                                <span class="brush-name">Tetraedro</span>
+                            </div>
+                            <div class="brush-option" data-brush="octahedron" onclick="selectBrush('octahedron')">
+                                <span class="brush-icon">◆</span>
+                                <span class="brush-name">Octaedro</span>
+                            </div>
+                            <div class="brush-option" data-brush="dodecahedron" onclick="selectBrush('dodecahedron')">
+                                <span class="brush-icon">⬟</span>
+                                <span class="brush-name">Dodecaedro</span>
+                            </div>
+                            <div class="brush-option" data-brush="icosahedron" onclick="selectBrush('icosahedron')">
+                                <span class="brush-icon">◈</span>
+                                <span class="brush-name">Icosaedro</span>
+                            </div>
+                        </div>
+						
+						                            <div class="brush-category">
+                                <div class="category-label">Especiais</div>
+                                <div class="brush-grid">
+                                    <button class="brush-option" data-brush="ring" onclick="selectBrush('ring')">
+                                        <span class="brush-icon">⭕</span>
+                                        <span class="brush-name">Anel</span>
+                                    </button>
+                                    <button class="brush-option" data-brush="disc" onclick="selectBrush('disc')">
+                                        <span class="brush-icon">⚫</span>
+                                        <span class="brush-name">Disco</span>
+                                    </button>
+                                    <button class="brush-option" data-brush="hemisphere" onclick="selectBrush('hemisphere')">
+                                        <span class="brush-icon">🌓</span>
+                                        <span class="brush-name">Hemisfério</span>
+                                    </button>
+                                    <button class="brush-option" data-brush="box" onclick="selectBrush('box')">
+                                        <span class="brush-icon">📦</span>
+                                        <span class="brush-name">Caixa</span>
+                                    </button>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+		<div class="input-group">
+			<label>🎨 Paleta:</label>
+			<div id="colorPalette" class="color-palette"></div>
+			
+			<div style="display: flex; gap: 4px; align-items: center;">
+				<input 
+					type="color" 
+					id="colorPicker" 
+					value="#ff6b6b" 
+					style="width: 40px; height: 32px; border: 1px solid #3a3a3a; border-radius: 4px; cursor: pointer;"
+					onchange="updateCurrentColor(this.value)"
+				/>
+				
+				<button 
+					id="eyedropperBtn"
+					class="btn btn-secondary" 
+					onclick="setTool('eyedropper')"
+					title="Conta-gotas (Detectar cor do bloco)"
+					style="padding: 6px 10px; font-size: 14px;"
+				>
+					🧪
+				</button>
+
+				<div style="flex: 1; background: #1e1e1e; padding: 6px 8px; border-radius: 4px; font-size: 11px; color: #aaa; text-align: center; border: 1px solid #333;">
+					<span id="hexDisplay">#FF6B6B</span>
+				</div>
+				
+				<button 
+					class="btn btn-secondary" 
+					onclick="saveCurrentColor()"
+					title="Salvar cor na paleta"
+					style="padding: 6px 10px; font-size: 11px;"
+				>
+					💾
+				</button>
+			</div>
+		</div>
+        
+		<div class="input-group">
+            <label>🖼️ Textura:</label>
+            <input 
+                type="file" 
+                id="textureInput" 
+                accept=".json" 
+                onchange="importTextureJSON(event)"
+                style="display: none;"
+            />
+            
+            <button 
+                class="btn btn-secondary" 
+                onclick="document.getElementById('textureInput').click()"
+                style="width: 100%; margin-bottom: 5px;"
+            >
+                📁 Importar Textura (JSON)
+            </button>
+
+            <button 
+                class="btn btn-secondary" 
+                onclick="window.open('texturas_gerar.html', '_blank')"
+                style="width: 100%; background-color: #4a4a4a; border: 1px dashed #666;"
+                title="Abre o gerador de texturas em nova aba"
+            >
+                🎨 Criar Textura JSON
+            </button>
+        </div>
+		
+		
+		        <!-- 🔹 SEÇÃO COLAPSÁVEL: ROTAÇÃO DO PINCEL -->
+        <div style="margin-top: 12px; border-top: 1px solid #3a3a3a; padding-top: 12px;">
+            <div class="section-header" onclick="toggleSection('rotationSection')">
+                <h4>🔄 Rotação do Pincel</h4>
+                <span class="section-toggle" id="rotationToggle">▼</span>
+            </div>
+            
+            <div class="section-content expanded" id="rotationSection">
+                <!-- Botões de rotação em grid compacto -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px;">
+                    <button class="btn btn-secondary" onclick="rotateBrush('x', 45)" title="X +45°" style="padding: 6px; font-size: 10px;">
+                        X<br>45°
+                    </button>
+                    
+                    <button class="btn btn-secondary" onclick="rotateBrush('y', 45)" title="Y +45°" style="padding: 6px; font-size: 10px;">
+                        Y<br>45°
+                    </button>
+                    
+                    <button class="btn btn-secondary" onclick="rotateBrush('z', 45)" title="Z +45°" style="padding: 6px; font-size: 10px;">
+                        Z<br>45°
+                    </button>
+                    
+                    <button class="btn btn-secondary" onclick="resetRotation()" title="Reset" style="padding: 6px; font-size: 10px; background: #4a2020;">
+                        ✖<br>0°
+                    </button>
+                </div>
+                
+                <div class="compact-tip">
+                    💡 Gire antes de clicar. Preview em tempo real!
+                </div>
+            </div>
+        </div>
+		
+		
+			<div class="input-group">
+			<label>💾 Projeto & Assets:</label>
+			
+			<div class="button-group" style="margin-bottom: 10px;">
+				<button class="btn" onclick="downloadJSON()" title="Salvar projeto completo">⬇️ JSON</button>
+				<button class="btn btn-secondary" onclick="document.getElementById('loadInput').click()" title="Carregar projeto">📂 Abrir</button>
+				<button class="btn btn-secondary" onclick="exportToOBJ()" title="Exportar para OBJ" style="background: #e17055;">🌍 Exportar OBJ</button>
+			</div>
+			
+			<!-- 🆕 IMPORTADOR OBJ → VOXELS -->
+			<div class="button-group" style="margin-bottom: 10px; border-top: 1px solid #3a3a3a; padding-top: 10px;">
+				<button class="btn" onclick="document.getElementById('objInput').click()" title="Importar modelo OBJ e converter para voxels" style="background: #6c5ce7;">
+					🗿 Importar OBJ → Voxels
+				</button>
+			</div>
+			
+			<input type="file" id="loadInput" accept=".json" onchange="loadJSON(event)" style="display: none;" />
+			<input type="file" id="objInput" accept=".obj" onchange="Voxelizer.importOBJ(this.files[0])" style="display: none;" />
+
+			<div class="filesystem-container">
+				<div class="fs-toolbar">
+					<div class="fs-path" id="fsBreadcrumbs">📁 Raiz</div>
+					<div class="fs-actions">
+						<button class="btn-icon" onclick="FileSystem.createFolder()" title="Nova Pasta">➕📁</button>
+						<button class="btn-icon" onclick="document.getElementById('fsImportInput').click()" title="Importar Textura JSON">⬇️📄</button>
+						<button class="btn-icon danger" onclick="FileSystem.deleteSelected()" title="Excluir Selecionado">🗑️</button>
+					</div>
+				</div>
+
+				<div id="fsGrid" class="fs-grid">
+					<div class="fs-empty">Pasta vazia</div>
+				</div>
+
+				<input type="file" id="fsImportInput" accept=".json" onchange="FileSystem.importFile(event)" style="display: none;" />
+			</div>
+		</div>
+
+		<div class="input-group" style="margin-top: 10px;">
+			<div class="section-header" onclick="toggleSection('debugSection')">
+				<label style="cursor: pointer;">📋 Debug / Preview JSON</label>
+				<span class="section-toggle" id="debugToggle">▼</span> 
+			</div>
+			<div id="debugSection" class="section-content">
+				<pre id="jsonPreview" class="json-preview">{}</pre>
+			</div>
+		</div>
+	</div>
+		</div>
+        <!-- Área principal com canvas 3D -->
+        <div class="main-area">
+            <div class="toolbar">
+                <!-- Botões de ferramentas -->
+                <button class="tool-btn active" onclick="setTool('add')">➕ Adicionar</button>
+                <button class="tool-btn" onclick="setTool('select')">🎯 Selecionar</button>
+                <button class="tool-btn" onclick="setTool('remove')">➖ Remover</button>
+				<button class="tool-btn" onclick="setTool('clearall')">🗑️ Limpar Tudo</button>
+                <button class="tool-btn" onclick="setTool('paint')">🎨 Pintar</button>
+                <button class="tool-btn" onclick="resetCamera()">📷 Reset Câmera</button>
+                
+                <!-- Menu Modo Adicionar -->
+                <div class="dropdown">
+                    <button class="tool-btn" onclick="toggleMenu('menuAdicionar')">🤚 Adicionar</button>
+                    <div id="menuAdicionar" class="dropdown-content">
+                        <strong>Modo Adicionar:</strong>
+                        <span>🖱️ Mover: Preview</span>
+                        <span>🔄 Scroll: Redimensionar</span>
+                        <span>👆 Clique: Confirmar</span>
+                        <span>⌨️ R/T/Q: Rotacionar</span>
+                        <span>⌨️ +/-: Redimensionar</span>
+                        <span id="brushInfo">🖌️ Pincel: Cubo</span>
+                        <span id="brushSize">📏 Tamanho: 1.0x</span>
+                        <span id="gridStepDisplay">📐 Grid: 0.50u</span>
+                    </div>
+                </div>
+			<!-- Menu Modo Selecionar -->
+				<div class="dropdown">
+					<button class="tool-btn" onclick="toggleMenu('menuSelecionar')">👆 Selecionar</button>
+					<div id="menuSelecionar" class="dropdown-content" style="min-width: 240px;">
+						<strong>🎮 Comandos Pro:</strong>
+						
+						<div style="margin-top: 5px; color: #aaa; font-size: 0.85em;">SELEÇÃO</div>
+						<span>🖱️ Clique: Selecionar Um</span>
+						<span style="color: #4ecdc4; font-weight: bold;">✨ Ctrl+Clique: Agrupar (Multi)</span>
+						
+						<hr style="border: 0; border-top: 1px solid #444; margin: 5px 0;">
+						<div style="color: #aaa; font-size: 0.85em; margin-bottom: 2px;">CLONAGEM</div>
+						<div style="color: #4ecdc4; font-size: 0.85em; line-height: 1.3;">
+							📋 <b>Modo Carimbo:</b><br>
+							Selecione um bloco e clique em<br>
+							<span style="color: #fff; background: rgba(255,255,255,0.1); padding: 0 4px; border-radius: 2px;">+ Adicionar</span> para clonar.
+						</div>
+
+						<hr style="border: 0; border-top: 1px solid #444; margin: 5px 0;">
+						
+						<div style="margin-top: 2px; color: #aaa; font-size: 0.85em;">AÇÕES</div>
+						<span style="color: #ffe66d;">↩️ Ctrl+Z: Desfazer</span>
+						<span style="color: #ffe66d;">↪️ Ctrl+Y: Refazer</span>
+						<span>📋 Ctrl+C / V: Copiar e Colar</span>
+						<span>🗑️ DEL: Deletar Bloco</span>
+
+						<hr style="border: 0; border-top: 1px solid #444; margin: 5px 0;">
+
+						<div style="margin-top: 2px; color: #aaa; font-size: 0.85em;">GIZMO (TRANSFORMAÇÃO)</div>
+						<span>⌨️ G: Mover (Grab)</span>
+						<span>⌨️ R: Rotacionar (Rotate)</span>
+						<span style="color: #ff9f43; font-weight: bold;">📐 S: Escalar Eixos (Scale)</span>
+						<div style="font-size: 0.75em; color: #888; margin-bottom: 4px; font-style: italic;">(Arraste os cubos do Gizmo!)</div>
+
+						<hr style="border: 0; border-top: 1px dashed #444; margin: 4px 0;">
+
+						<span>⌨️ Tecla 0: Resetar Rotação</span>
+						<span>⌨️ + / - : Escala Uniforme (0.1)</span>
+					</div>
+				</div>                
+                <!-- Menu Controles Globais -->
+                <div class="dropdown">
+                    <button class="tool-btn" onclick="toggleMenu('menuGlobal')">⚙️ Controles Gerais</button>
+                    <div id="menuGlobal" class="dropdown-content">
+                        <strong>Controles Gerais:</strong>
+                        <span>🖱️ Arrastar: Rotacionar câmera</span>
+                        <span>🔄 Scroll: Zoom</span>
+                        <span>⌨️ ESC: Cancelar/Deselecionar</span>
+                        <span>⌨️ Ctrl+Z: Desfazer</span>
+                        <span id="blockCount">📦 Blocos: 0</span>
+                    </div>
+                </div>
+            </div>
+			
+			<div class="canvas-container">
+			<canvas id="canvas3d"></canvas>
+			<div id="selectionBox"></div> </div>
+                
+                <!-- Painel de Formas Geométricas (Lado Direito) -->
+                <div class="shapes-sidebar">
+				<div class="shapes-sidebar-header">
+					<h3>📐 Formas</h3>
+				</div>
+
+				<div class="shape-category" style="background: rgba(0,0,0,0.2); border-radius: 6px; padding: 6px; border: 1px solid #4ecdc4;">
+					<div class="category-header" onclick="toggleSection('atomSection')" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: none; margin-bottom: 0; color: #4ecdc4;">
+						<span>⚛️ Atomização</span>
+						<span id="atomToggle" style="font-size: 9px;">▼</span>
+					</div>
+
+					<div id="atomSection" class="section-content" style="padding-top: 8px;">
+						
+						<div style="margin-bottom: 8px;">
+							<label style="font-size: 9px; color: #aaa; display: block; margin-bottom: 2px;">Bloco Base:</label>
+							<select id="masterBlockType" style="width: 100%; background: #1e1e1e; color: #e0e0e0; border: 1px solid #3a3a3a; border-radius: 4px; padding: 3px; font-size: 10px;">
+								<option value="default">✨ Original</option>
+								<option value="cube">⬛ Cubo</option>
+								<option value="sphere">⚪ Esfera</option>
+								<option value="cylinder">🛢️ Cilindro</option>
+								<option value="cone">🔺 Cone</option>
+								<option value="capsule">💊 Cápsula</option>
+								<option value="pyramid">🔺 Pirâmide</option>
+								<option value="torus">🍩 Toro</option>
+							</select>
+						</div>
+
+						<div>
+							<label style="font-size: 9px; color: #aaa; display: block; margin-bottom: 2px;">Escala Base:</label>
+							<div style="display: flex; align-items: center; gap: 4px;">
+								<input type="number" id="masterBlockScale" value="1.0" step="0.1" min="0.1" style="width: 100%; background: #1e1e1e; color: #e0e0e0; border: 1px solid #3a3a3a; border-radius: 4px; padding: 3px; font-size: 10px;">
+								<span style="font-size: 10px; color: #666;">x</span>
+							</div>
+						</div>
+						
+						<button onclick="document.getElementById('masterBlockType').value='default'; document.getElementById('masterBlockScale').value='1.0';" style="width: 100%; margin-top: 6px; background: #333; border: none; border-radius: 3px; color: #888; font-size: 9px; cursor: pointer; padding: 2px;">
+							↺ Resetar
+						</button>
+					</div>
+				</div>
+                    <!-- INCLUIR AQUI ENTRADA DO USUÁRIO PARA DEFINIR FORMA E TAMANHO -->
+						<div class="shape-category">
+							<div class="category-header">Básicas</div>
+							<div class="shape-grid-compact">
+								<div class="shape-btn-compact" onclick="openShapeModal('cube')" title="Cubo">
+									<div class="shape-icon-compact">⬛</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('plane')" title="Plano">
+									<div class="shape-icon-compact">⬜</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="shape-category">
+							<div class="category-header">Sólidos</div>
+							<div class="shape-grid-compact">
+								<div class="shape-btn-compact" onclick="openShapeModal('sphere')" title="Esfera">
+									<div class="shape-icon-compact">⚪</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('cylinder')" title="Cilindro">
+									<div class="shape-icon-compact">🛢️</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('cone')" title="Cone">
+									<div class="shape-icon-compact">🔺</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('torus')" title="Toro">
+									<div class="shape-icon-compact">🍩</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="shape-category">
+						<div class="category-header">Sólidos Platônicos</div>
+
+						<div class="shape-grid-compact">
+
+							<div class="shape-btn-compact" onclick="openShapeModal('tetrahedron')" title="Tetraedro">
+								<div class="shape-icon-compact">▲</div>
+							</div>
+
+							<div class="shape-btn-compact" onclick="openShapeModal('hexahedron')" title="Hexaedro (Cubo)">
+								<div class="shape-icon-compact">🧊</div>
+							</div>
+
+							<div class="shape-btn-compact" onclick="openShapeModal('octahedron')" title="Octaedro">
+								<div class="shape-icon-compact">◆</div>
+							</div>
+
+							<div class="shape-btn-compact" onclick="openShapeModal('dodecahedron')" title="Dodecaedro">
+								<div class="shape-icon-compact">⬟</div>
+							</div>
+
+							<div class="shape-btn-compact" onclick="openShapeModal('icosahedron')" title="Icosaedro">
+								<div class="shape-icon-compact">◈</div>
+							</div>
+
+						</div>
+					</div>
+
+						<div class="shape-category">
+							<div class="category-header">Arquitetura</div>
+							<div class="shape-grid-compact">
+
+								<div class="shape-btn-compact" onclick="openShapeModal('pyramid')" title="Pirâmide">
+									<div class="shape-icon-compact">🔺</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('stairs')" title="Escada">
+									<div class="shape-icon-compact">🔶</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('arch')" title="Arco">
+									<div class="shape-icon-compact">🌉</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('tower')" title="Torre">
+									<div class="shape-icon-compact">🗼</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('spiralStairs')" title="Escada Espiral">
+									<div class="shape-icon-compact">🌀</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('dome')" title="Domo">
+									<div class="shape-icon-compact">🏟️</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('tree')" title="Árvore">
+									<div class="shape-icon-compact">🌲</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('castle')" title="Castelo">
+									<div class="shape-icon-compact">🏰</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('bridge')" title="Ponte">
+									<div class="shape-icon-compact">🌉</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('lShapedStairs')" title="Escada em L">
+									<div class="shape-icon-compact">↩️</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('figurine')" title="Estatueta">
+									<div class="shape-icon-compact">🕴️</div>
+								</div>
+
+							</div>
+						</div>
+						
+					<div class="shape-category">
+						<div class="category-header">Geometria Sagrada</div>
+						<div class="shape-grid-compact">
+							<div class="shape-btn-compact" onclick="openShapeModal('metatrons_cube')" title="Cubo de Metatron">
+								<div class="shape-icon-compact">🔯</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('flower_of_life')" title="Flor da Vida">
+								<div class="shape-icon-compact">🌸</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('seed_of_life')" title="Semente da Vida">
+								<div class="shape-icon-compact">🌼</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('sri_yantra')" title="Sri Yantra">
+								<div class="shape-icon-compact">🕉️</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('vesica_piscis')" title="Vesica Piscis">
+								<div class="shape-icon-compact">♓</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="shape-category">
+						<div class="category-header">Fractais Avançados</div>
+						<div class="shape-grid-compact">
+							<div class="shape-btn-compact" onclick="openShapeModal('sierpinski_pyramid')" title="Pirâmide de Sierpinski">
+								<div class="shape-icon-compact">🔺</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('dragon_curve_3d')" title="Curva do Dragão 3D">
+								<div class="shape-icon-compact">🐉</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('hilbert_curve')" title="Curva de Hilbert 3D">
+								<div class="shape-icon-compact">🔄</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('julia_set')" title="Conjunto de Julia 3D">
+								<div class="shape-icon-compact">🌊</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('apollonian_gasket')" title="Gasket Apoloniano">
+								<div class="shape-icon-compact">⚪</div>
+							</div>
+						</div>
+					</div>
+
+						<div class="shape-category">
+							<div class="category-header">Matemáticas</div>
+							<div class="shape-grid-compact">
+
+								<div class="shape-btn-compact" onclick="openShapeModal('helix')" title="Hélice">
+									<div class="shape-icon-compact">🌀</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('wave')" title="Onda">
+									<div class="shape-icon-compact">🌊</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('fractalTree')" title="Árvore Fractal">
+									<div class="shape-icon-compact">🎋</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('dnaHelix')" title="Hélice de DNA">
+									<div class="shape-icon-compact">🧬</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('heart')" title="Coração">
+									<div class="shape-icon-compact">❤️</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('star')" title="Estrela">
+									<div class="shape-icon-compact">⭐</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('maze')" title="Labirinto">
+									<div class="shape-icon-compact">🧩</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('crystal')" title="Cristal">
+									<div class="shape-icon-compact">💎</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('hollowCylinder')" title="Cilindro Oco">
+									<div class="shape-icon-compact">⭕</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('rectangularPrism')" title="Paralelepípedo">
+									<div class="shape-icon-compact">⬜</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('hollowSphere')" title="Esfera Oca">
+									<div class="shape-icon-compact">🔮</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('hollowCone')" title="Cone Oco">
+									<div class="shape-icon-compact">🌪️</div>
+								</div>
+								
+								<div class="shape-btn-compact" onclick="openShapeModal('hexagon')" title="Hexágono"> 
+									<div class="shape-icon-compact">⬢</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="shape-category">
+						<div class="category-header">Abstratas & Matemáticas</div>
+						<div class="shape-grid-compact">
+							<div class="shape-btn-compact" onclick="openShapeModal('knot')" title="Nó Toroidal">
+								<div class="shape-icon-compact">🎗️</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('mobius')" title="Fita de Möbius">
+								<div class="shape-icon-compact">🌀</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('klein_bottle')" title="Garrafa de Klein">
+								<div class="shape-icon-compact">🧪</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('pentagram')" title="Pentagrama 3D">
+								<div class="shape-icon-compact">⭐</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('mandala')" title="Mandala 3D">
+								<div class="shape-icon-compact">☸️</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('fractal_cube')" title="Cubo de Menger">
+								<div class="shape-icon-compact">🧊</div>
+							</div>
+							<div class="shape-btn-compact" onclick="openShapeModal('tessellation')" title="Tesselação 3D">
+								<div class="shape-icon-compact">🧩</div>
+							</div>
+						</div>
+					</div>
+
+						<div class="shape-category">
+							<div class="category-header">Construções</div>
+							<div class="shape-grid-compact">
+								<div class="shape-btn-compact" onclick="openShapeModal('proceduralBuilding')" title="Edifício Modular">
+									<div class="shape-icon-compact">🏢</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('proceduralHouse')" title="Casa Procedural">
+									<div class="shape-icon-compact">🏠</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('temple')" title="Templo / Catedral">
+									<div class="shape-icon-compact">⛪</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('vault')" title="Abóbada">
+									<div class="shape-icon-compact">🏛️</div>
+								</div>
+								
+								<!-- ========== NOVAS FORMAS ========== -->
+								
+								<div class="shape-btn-compact" onclick="openShapeModal('lighthouse')" title="Farol">
+									<div class="shape-icon-compact">🗼</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('windmill')" title="Moinho de Vento">
+									<div class="shape-icon-compact">🏰</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('well')" title="Poço">
+									<div class="shape-icon-compact">🚰</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('gazebo')" title="Gazebo">
+									<div class="shape-icon-compact">⛺</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('fountain')" title="Fonte">
+									<div class="shape-icon-compact">⛲</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="shape-category">
+							<div class="category-header">Natureza</div>
+							<div class="shape-grid-compact">
+								<div class="shape-btn-compact" onclick="openShapeModal('cactus')" title="Cacto">
+									<div class="shape-icon-compact">🌵</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('palm')" title="Palmeira">
+									<div class="shape-icon-compact">🌴</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('flower')" title="Flor">
+									<div class="shape-icon-compact">🌸</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('bush')" title="Arbusto">
+									<div class="shape-icon-compact">🌿</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('pinecone')" title="Pinha">
+									<div class="shape-icon-compact">🌰</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('rock')" title="Rocha">
+									<div class="shape-icon-compact">🪨</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('mushroom')" title="Cogumelo">
+									<div class="shape-icon-compact">🍄</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('coral')" title="Coral">
+									<div class="shape-icon-compact">🪸</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('fallenLog')" title="Tronco Caído">
+									<div class="shape-icon-compact">🪵</div>
+								</div>
+								<div class="shape-btn-compact" onclick="openShapeModal('reed')" title="Junco">
+									<div class="shape-icon-compact">🌾</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="shape-category">
+							<div class="category-header">Orgânicas</div>
+							<div class="shape-grid-compact">
+
+								<div class="shape-btn-compact" onclick="openShapeModal('rock_2')" title="Pedreira">
+									<div class="shape-icon-compact">🪨</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('mushroom_2')" title="Cogumelo Gigante">
+									<div class="shape-icon-compact">🍄</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('coral')" title="Coral / Colônia">
+									<div class="shape-icon-compact">🪸</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('organicArch')" title="Arco Natural">
+									<div class="shape-icon-compact">🏜️</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="shape-category">
+							<div class="category-header">Geometria Avançada</div>
+							<div class="shape-grid-compact">
+
+								<div class="shape-btn-compact" onclick="openShapeModal('superquadric')" title="Superquadric">
+									<div class="shape-icon-compact">🔷</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('implicitSurface')" title="Superfície Implícita">
+									<div class="shape-icon-compact">∿</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('gyroid')" title="Gyroid">
+									<div class="shape-icon-compact">🧠</div>
+								</div>
+								
+								<div class="shape-btn-compact" onclick="openShapeModal('sticks_pile')" title="Pilha de Varetas">
+									<div class="shape-icon-compact">🥢</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="shape-category">
+							<div class="category-header">Sistêmicas</div>
+							<div class="shape-grid-compact">
+
+								<div class="shape-btn-compact" onclick="openShapeModal('ruins')" title="Ruínas Procedurais">
+									<div class="shape-icon-compact">🏚️</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('dungeon')" title="Dungeon Modular">
+									<div class="shape-icon-compact">🗝️</div>
+								</div>
+
+								<div class="shape-btn-compact" onclick="openShapeModal('platformSet')" title="Plataformas">
+									<div class="shape-icon-compact">🧱</div>
+								</div>
+
+							</div>
+						</div>
+
+
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         🔥 MODAL DE PARÂMETROS (FALTAVA ISSO!)
+         ========================================== -->
+    <div id="paramsModal" class="params-modal">
+        <div class="modal-content">
+            <h3 id="modalTitle" class="modal-header">Configurar Forma</h3>
+            <div id="modalParams"></div>
+            <div class="modal-buttons">
+                <button class="btn" onclick="generateSelectedShape()">✨ Gerar</button>
+                <button class="btn btn-secondary" onclick="closeShapeModal()">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+	<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+	<script src="https://unpkg.com/three@0.128.0/examples/js/controls/TransformControls.js"></script>
+	<!-- 🆕 OBJ LOADER (necessário para importar .obj) -->
+	<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+
+		<script src="js/config.js"></script> 
+		 <script src="js/geometries.js"></script> 
+		 <script src="js/TextureGenerator.js"></script> 
+		 <script src="js/materials.js"></script>
+		 <script src="js/scene.js"></script>   
+		 <script src="js/selection.js"></script> 
+		 <script src="js/InfiniteGridHelper.js"></script>
+		 <script src="js/core.js"></script>     
+		 <script src="js/debug_visual.js"></script>		 
+		 <script src="js/interaction.js"></script>
+		 <script src="js/shapes.js"></script>    
+		 <script src="js/ui.js"></script>    
+		 <script src="js/api.js"></script>
+		 <script src="js/OBJExporter.js"></script>		 
+		 <script src="js/filesystem.js"></script>
+
+		 <!-- 🆕 VOXELIZER (importar OBJ → Voxels) -->
+		 <script src="js/voxelizer.js"></script>
+		 <script>
+		// Chama o init apenas depois que TUDO carregou
+		window.onload = function() {
+			if(typeof init === 'function') {
+				init(); 
+				console.log("🚀 Editor 3D Iniciado com Sucesso!");
+			} else {
+				console.error("Erro: Função init() não encontrada. Verifique js/scene.js");
+			}
+		};
+	</script>
+    
+    <script>
+    // Sistema de Toggle de Menus
+    function toggleMenu(menuId) {
+        // Fecha todos os outros menus abertos
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            if (dropdowns[i].id !== menuId) {
+                dropdowns[i].classList.remove('show');
+            }
+        }
+        // Abre ou fecha o menu clicado
+        document.getElementById(menuId).classList.toggle("show");
+    }
+
+    // Fecha menus ao clicar fora
+    window.onclick = function(event) {
+        if (!event.target.matches('.tool-btn')) {
+            const dropdowns = document.getElementsByClassName("dropdown-content");
+            for (let i = 0; i < dropdowns.length; i++) {
+                dropdowns[i].classList.remove('show');
+            }
+        }
+    }
+	
+    </script>
+	<script>
+function toggleSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    const toggle = document.getElementById(sectionId.replace('Section', 'Toggle'));
+    
+    if (section.classList.contains('expanded')) {
+        section.classList.remove('expanded');
+        toggle.textContent = '▶';
+    } else {
+        section.classList.add('expanded');
+        toggle.textContent = '▼';
+    }
+}
+
+// Inicializa todas as seções como expandidas
+document.addEventListener('DOMContentLoaded', () => {
+    // Rotação expandida por padrão
+    // Grid colapsado por padrão
+    const gridSection = document.getElementById('gridSection');
+    const gridToggle = document.getElementById('gridToggle');
+    if (gridSection && gridToggle) {
+        gridSection.classList.remove('expanded');
+        gridToggle.textContent = '▶';
+    }
+});
+</script>
+	</body>
+	</html>

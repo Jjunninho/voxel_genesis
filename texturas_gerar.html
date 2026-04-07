@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="texturas/css/texturas.css">
+	<link rel="stylesheet" href="texturas/css/ai_section.css">
+    <title>🎨 DJ das Texturas - 🌌 Voxel Genesis IA</title>
+</head>
+<body>
+    <div class="container">
+        <h1>🌌 Voxel Genesis IA<br>🎨 DJ das Texturas</h1>
+        <p class="subtitle">Crie texturas únicas e multicor com mistura, ruído e efeitos especiais</p>
+
+        <div class="info-box">
+            <h3>🎛️ Painel de Controle Criativo</h3>
+            <p>Misture texturas, adicione ruído, controle profundidade e crie padrões únicos com este gerador modular. Exporte apenas a receita (~1KB) para seu projeto 3D!</p>
+        </div>
+
+        <!-- 🤖 NOVA SEÇÃO: Geração via IA -->
+        <div class="ai-section">
+            <div class="ai-header">
+                <h2>🤖 Gerador de Texturas via IA</h2>
+                <p>Descreva a textura que deseja e a IA cria os parâmetros perfeitos!</p>
+            </div>
+
+            <div class="ai-input-container">
+                <textarea 
+                    id="aiPromptInput" 
+                    placeholder="Ex: textura de couro marrom envelhecido, pedra vulcânica porosa, madeira de carvalho..."
+                    rows="3"
+                ></textarea>
+                <button id="generateAiBtn" class="ai-generate-btn">
+                    ✨ Gerar com IA
+                </button>
+            </div>
+
+            <div class="ai-suggestions">
+                <p class="suggestions-label">💡 Sugestões rápidas:</p>
+                <div class="suggestions-grid" id="suggestionsGrid">
+                    <!-- Preenchido por JavaScript -->
+                </div>
+            </div>
+
+            <div id="aiStatus" class="ai-status hidden">
+                <!-- Status da geração -->
+            </div>
+        </div>
+
+        <div class="control-panels">
+            <!-- Painel 1: Texturas Base -->
+				 <div class="control-panel">
+					<div class="section-title">🎭 Texturas Base</div>
+					
+					<div class="control-group">
+						<label>Textura Primária:</label>
+						<div class="custom-dropdown" id="dropdownPrimary">
+							<button class="dropdown-toggle" onclick="toggleDropdown('dropdownPrimary')">
+								<span id="labelPrimary">Selecione a Textura...</span>
+								<span class="arrow">▼</span>
+							</button>
+							<div class="dropdown-content">
+								<div class="texture-grid" id="primaryTextureGrid">
+									</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<label>Textura Secundária (Mix):</label>
+						<div class="custom-dropdown" id="dropdownSecondary">
+							<button class="dropdown-toggle" onclick="toggleDropdown('dropdownSecondary')">
+								<span id="labelSecondary">Selecione a Textura...</span>
+								<span class="arrow">▼</span>
+							</button>
+							<div class="dropdown-content">
+								<div class="texture-grid" id="secondaryTextureGrid">
+									</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label>Modo de Mistura:</label>
+						<select id="blendMode">
+							<option value="add">Adição</option>
+							<option value="multiply">Multiplicar</option>
+							<option value="screen">Tela</option>
+							<option value="overlay">Sobrepor</option>
+							<option value="difference">Diferença</option>
+							<option value="noise">Ruído Aleatório</option>
+						</select>
+					</div>
+
+					<div class="control-group">
+						<label>Intensidade da Mistura: <span class="value-display" id="blendAmountValue">0.5</span></label>
+						<input type="range" id="blendAmount" min="0" max="1" value="0.5" step="0.05">
+					</div>
+				
+					<div class="control-group">
+						<label>Estilo de Renderização:</label>
+						<div class="render-modes-grid">
+							<button class="render-mode-btn active" data-mode="texture" onclick="setRenderMode('texture')">
+								🎭 Textura
+							</button>
+							
+							<button class="render-mode-btn" data-mode="gradient" onclick="setRenderMode('gradient')">
+								🌈 Gradiente
+							</button>
+							
+							<button class="render-mode-btn" data-mode="solid" onclick="setRenderMode('solid')">
+								⬛ Sólida
+							</button>
+							
+							<button class="render-mode-btn" data-mode="pixel" onclick="setRenderMode('pixel')">
+								👾 Pixel Art
+							</button>
+
+							<button id="tilingBtn" class="render-mode-btn" style="grid-column: span 2; margin-top: 5px; border-color: #ffd700; color: #ffd700;" onclick="toggleTiling()">
+								🔄 Tiling (Repetição Infinita)
+							</button>
+							
+							<button class="render-mode-btn" data-mode="scanlines" onclick="setRenderMode('scanlines')">
+								📺 Scanlines
+							</button>
+
+							<button class="render-mode-btn" data-mode="circles" onclick="setRenderMode('circles')">
+								🎯 Círculos
+							</button>
+
+							<button class="render-mode-btn" data-mode="checkerboard" onclick="setRenderMode('checkerboard')">
+								♟️ Xadrez
+							</button>
+
+							<button class="render-mode-btn" data-mode="voronoi" onclick="setRenderMode('voronoi')">
+								🕸️ Voronoi
+							</button>
+
+							<button class="render-mode-btn" data-mode="hexagons" onclick="setRenderMode('hexagons')">
+								🔷 Hexágonos
+							</button>
+
+							<button class="render-mode-btn" data-mode="spiral" onclick="setRenderMode('spiral')">
+								🌀 Espiral
+							</button>
+						</div>
+					</div>	
+			</div>
+
+            <!-- Painel 2: Cores e Efeitos -->
+            <div class="control-panel">
+                <div class="section-title">🌈 Paleta de Cores</div>
+                <div class="color-grid">
+                    <div class="color-input-wrapper">
+                        <input type="color" id="color1" value="#8B4513">
+                        <span class="color-label">Cor 1</span>
+                    </div>
+                    <div class="color-input-wrapper">
+                        <input type="color" id="color2" value="#D2691E">
+                        <span class="color-label">Cor 2</span>
+                    </div>
+                    <div class="color-input-wrapper">
+                        <input type="color" id="color3" value="#FFD700">
+                        <span class="color-label">Cor 3</span>
+                    </div>
+                    <div class="color-input-wrapper">
+                        <input type="color" id="color4" value="#4169E1">
+                        <span class="color-label">Cor 4</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Modo de Cores:</label>
+                    <select id="colorMode">
+                        <option value="gradient">Gradiente</option>
+                        <option value="noise">Ruído Colorido</option>
+                        <option value="bands">Faixas</option>
+                        <option value="spots">Manchas</option>
+                        <option value="rainbow">Arco-íris</option>
+                    </select>
+                </div>
+
+                <div class="section-title">✨ Efeitos Especiais</div>
+                <div class="effects-grid">
+                    <button class="effect-btn" data-effect="depth">Profundidade</button>
+                    <button class="effect-btn" data-effect="glow">Brilho</button>
+                    <button class="effect-btn" data-effect="cracks">Rachaduras</button>
+                    <button class="effect-btn" data-effect="waves">Ondas</button>
+                    <button class="effect-btn" data-effect="cells">Células</button>
+                    <button class="effect-btn" data-effect="crystals">Cristais</button>
+                    <button class="effect-btn" data-effect="fibers">Fibras</button>
+                    <button class="effect-btn" data-effect="sparks">Faíscas</button>
+					<button class="effect-btn" data-effect="vignette">Borda Escura</button>
+                </div>
+            </div>
+
+            <!-- Painel 3: Parâmetros -->
+            <div class="control-panel">
+                <div class="section-title">⚙️ Parâmetros Avançados</div>
+                
+                <div class="control-group">
+                    <label>Seed Aleatória:</label>
+                    <div class="seed-generator">
+                        <input type="number" id="seed" value="12345" min="1" max="9999999">
+                        <button id="randomSeedBtn" class="secondary-btn">🎲 Nova Seed</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Escala: <span class="value-display" id="scaleValue">50</span></label>
+                    <input type="range" id="scale" min="5" max="200" value="50" step="5">
+                </div>
+
+                <div class="control-group">
+                    <label>Ruído (Detalhe): <span class="value-display" id="noiseValue">0.3</span></label>
+                    <input type="range" id="noiseAmount" min="0" max="1" value="0.3" step="0.05">
+                </div>
+
+                <div class="control-group">
+                    <label>Octaves (Complexidade): <span class="value-display" id="octavesValue">4</span></label>
+                    <input type="range" id="octaves" min="1" max="8" value="4" step="1">
+                </div>
+
+                <div class="control-group">
+                    <label>Contraste: <span class="value-display" id="contrastValue">1.5</span></label>
+                    <input type="range" id="contrast" min="0.1" max="3" value="1.5" step="0.1">
+                </div>
+
+                <div class="control-group">
+                    <label>Distorção: <span class="value-display" id="distortionValue">0.2</span></label>
+                    <input type="range" id="distortion" min="0" max="1" value="0.2" step="0.05">
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button id="generateBtn">
+                🎨 Gerar Textura
+            </button>
+            <button id="randomizeBtn" class="secondary-btn">
+                🎲 Randomizar Tudo
+            </button>
+        </div>
+
+        <div class="canvas-container" id="canvasContainer" style="display: none;">
+            <div class="canvas-wrapper">
+                <h3>Visualização da Textura</h3>
+                <canvas id="previewCanvas"></canvas>
+                <button id="downloadBtn" class="download-btn" style="margin-top: 10px;">
+                    💾 Baixar PNG
+                </button>
+            </div>
+            <div class="canvas-wrapper">
+                <h3>Receita Procedural <span class="file-size" id="fileSize">0 KB</span></h3>
+                <div class="json-preview" id="jsonPreview"></div>
+                <button id="downloadJsonBtn" class="download-btn secondary-btn" style="margin-top: 10px;">
+                    📄 Baixar JSON
+                </button>
+                <button id="copyJsonBtn" class="download-btn" style="margin-top: 10px;">
+                    📋 Copiar Receita
+                </button>
+            </div>
+        </div>
+		
+		<div class="container" style="margin-top: 30px;">
+        <div class="info-box" style="border-left-color: #00aaff;">
+            <h3>🗂️ Minha Biblioteca Local</h3>
+            <p>Seus JSONs salvos ficam aqui. Clique duplo para carregar uma receita de volta ao editor.</p>
+        </div>
+
+        <div class="fs-container">
+            <div class="fs-toolbar">
+                <div class="fs-breadcrumbs" id="fsBreadcrumbs">📁 Raiz</div>
+                <div class="fs-actions">
+                    <button class="fs-btn" onclick="FileSystemTextures.createFolder()">➕ Pasta</button>
+                    <button class="fs-btn danger" onclick="FileSystemTextures.deleteSelected()">🗑️ Excluir</button>
+                    <label class="fs-btn import-btn">
+                        📥 Importar JSON
+                        <input type="file" id="fsImportInput" accept=".json" multiple onchange="FileSystemTextures.importFile(event)">
+                    </label>
+                </div>
+            </div>
+            
+				<div class="fs-grid" id="fsGrid">
+                <div class="fs-empty">Carregando biblioteca...</div>
+            </div>
+        </div>
+    </div>
+
+   <script type="module" src="texturas/js/filesystem_texturas.js"></script>
+   <script type="module" src="texturas/js/main.js"></script>
+   <script>
+    // Função para abrir/fechar o dropdown
+    function toggleDropdown(id) {
+        // Fecha todos os outros primeiro (opcional, para UI mais limpa)
+        document.querySelectorAll('.custom-dropdown').forEach(d => {
+            if(d.id !== id) d.classList.remove('active');
+        });
+        
+        // Alterna o atual
+        const dropdown = document.getElementById(id);
+        dropdown.classList.toggle('active');
+    }
+
+    // Fecha o menu se clicar fora dele
+    window.onclick = function(event) {
+        if (!event.target.closest('.custom-dropdown')) {
+            document.querySelectorAll('.custom-dropdown').forEach(d => {
+                d.classList.remove('active');
+            });
+        }
+    }
+
+    // Lógica para atualizar o nome no botão quando escolher uma opção
+    // Adicione um Event Listener delegado para pegar os cliques nos botões gerados dinamicamente
+    document.addEventListener('click', function(e) {
+        // Verifica se clicou em um botão de textura dentro de um dropdown
+        const btn = e.target.closest('.texture-btn');
+        if (btn) {
+            const dropdown = btn.closest('.custom-dropdown');
+            if (dropdown) {
+                // Pega o texto/ícone do botão clicado
+                const btnContent = btn.innerHTML; // Pega ícone e texto
+                
+                // Atualiza o label do botão principal
+                const label = dropdown.querySelector('.dropdown-toggle span:first-child');
+                // Limpa quebras de linha para ficar bonito no botão fechado
+                label.innerHTML = btnContent.replace(/<br>/g, ' - '); 
+                
+                // Fecha o menu após selecionar
+                dropdown.classList.remove('active');
+            }
+        }
+    });
+</script>
+</body>
+</html>

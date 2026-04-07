@@ -1,0 +1,820 @@
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1e1e1e;
+    color: #e0e0e0;
+    overflow: hidden;
+}
+
+/* Container Principal */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* ========== SIDEBAR ESQUERDA (OTIMIZADA) ========== */
+.sidebar {
+    width: 320px; /* 🔹 Reduzido de 350px */
+    background: #252525;
+    border-right: 1px solid #3a3a3a;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 16px 20px; /* 🔹 Reduzido de 20px */
+    background: #2d2d2d;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.sidebar-header h2 {
+    font-size: 16px; /* 🔹 Reduzido de 18px */
+    color: #fff;
+    margin-bottom: 4px; /* 🔹 Reduzido de 8px */
+}
+
+.sidebar-header p {
+    font-size: 11px; /* 🔹 Reduzido de 12px */
+    color: #888;
+}
+
+.context-area {
+    flex: 1;
+    padding: 16px; /* 🔹 Reduzido de 20px */
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* 🔹 Reduzido de 15px */
+    overflow-y: auto;
+}
+
+/* ========== INPUT COMPACTO ========== */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px; /* 🔹 Reduzido de 8px */
+}
+
+.input-group label {
+    font-size: 12px; /* 🔹 Reduzido de 13px */
+    color: #aaa;
+    font-weight: 500;
+}
+
+.input-group textarea {
+    background: #1e1e1e;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 10px; /* 🔹 Reduzido de 12px */
+    color: #e0e0e0;
+    font-size: 13px; /* 🔹 Reduzido de 14px */
+    font-family: inherit;
+    resize: vertical;
+    min-height: 70px; /* 🔹 REDUZIDO de 120px - PRINCIPAL MUDANÇA */
+    max-height: 150px; /* 🔹 Limite máximo */
+}
+
+.input-group textarea:focus {
+    outline: none;
+    border-color: #007acc;
+}
+
+/* 🔹 NOVO: Placeholder melhorado */
+.input-group textarea::placeholder {
+    color: #666;
+    font-size: 12px;
+}
+
+/* ========== BOTÕES COMPACTOS ========== */
+.btn {
+    padding: 10px 20px; /* 🔹 Reduzido de 12px 24px */
+    background: #007acc;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 13px; /* 🔹 Reduzido de 14px */
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background: #005a9e;
+}
+
+.btn:active {
+    background: #004578;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: #3a3a3a;
+}
+
+.btn-secondary:hover {
+    background: #4a4a4a;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px; /* 🔹 Reduzido de 10px */
+}
+
+/* ========== MENSAGENS DE STATUS ========== */
+.status-message {
+    padding: 10px; /* 🔹 Reduzido de 12px */
+    border-radius: 6px;
+    margin-top: 8px; /* 🔹 Reduzido de 10px */
+    font-size: 12px; /* 🔹 Reduzido de 13px */
+    display: none;
+}
+
+.status-message.success {
+    background: #00b89433;
+    border: 1px solid #00b894;
+    color: #00b894;
+    display: block;
+}
+
+.status-message.error {
+    background: #ff6b6b33;
+    border: 1px solid #ff6b6b;
+    color: #ff6b6b;
+    display: block;
+}
+
+.status-message.info {
+    background: #007acc33;
+    border: 1px solid #007acc;
+    color: #74b9ff;
+    display: block;
+}
+
+/* ========== SELETOR DE PINCEL ========== */
+.brush-selector {
+    position: relative;
+}
+
+.brush-display {
+    width: 100%;
+    background: #1e1e1e;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 10px; /* 🔹 Reduzido de 12px */
+    color: #e0e0e0;
+    font-size: 13px; /* 🔹 Reduzido de 14px */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* 🔹 Reduzido de 10px */
+    transition: all 0.2s;
+}
+
+.brush-display:hover {
+    border-color: #007acc;
+    background: #252525;
+}
+
+#currentBrushIcon {
+    font-size: 18px; /* 🔹 Reduzido de 20px */
+}
+
+#currentBrushName {
+    flex: 1;
+    text-align: left;
+}
+
+.dropdown-arrow {
+    font-size: 10px;
+    color: #888;
+}
+
+/* Menu de Pincéis */
+.brush-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    background: #2d2d2d;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    max-height: 350px; /* 🔹 Reduzido de 400px */
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.brush-menu.active {
+    display: block;
+}
+
+.brush-menu::-webkit-scrollbar {
+    width: 6px; /* 🔹 Reduzido de 8px */
+}
+
+.brush-menu::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+.brush-menu::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+    border-radius: 4px;
+}
+
+.brush-category {
+    padding: 10px; /* 🔹 Reduzido de 12px */
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.brush-category:last-child {
+    border-bottom: none;
+}
+
+.category-label {
+    font-size: 10px; /* 🔹 Reduzido de 11px */
+    color: #888;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 8px; /* 🔹 Reduzido de 10px */
+}
+
+.brush-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.brush-option {
+    background: #1e1e1e;
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    padding: 8px; /* 🔹 Reduzido de 10px */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* 🔹 Reduzido de 10px */
+    transition: all 0.2s;
+    color: #e0e0e0;
+}
+
+.brush-option:hover {
+    background: #3a3a3a;
+    border-color: #007acc;
+}
+
+.brush-option.active {
+    background: #007acc;
+    border-color: #007acc;
+    color: white;
+}
+
+.brush-icon {
+    font-size: 16px; /* 🔹 Reduzido de 18px */
+}
+
+.brush-name {
+    font-size: 11px; /* 🔹 Reduzido de 12px */
+    font-weight: 500;
+}
+
+/* ========== ÁREA PRINCIPAL ========== */
+.main-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== TOOLBAR SUPERIOR ========== */
+.toolbar {
+    background: #2d2d2d;
+    border-bottom: 1px solid #3a3a3a;
+    padding: 10px 16px; /* 🔹 Reduzido de 12px 20px */
+    display: flex;
+    gap: 8px; /* 🔹 Reduzido de 10px */
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.tool-btn {
+    padding: 7px 14px; /* 🔹 Reduzido de 8px 16px */
+    background: #3a3a3a;
+    border: none;
+    border-radius: 4px;
+    color: #e0e0e0;
+    font-size: 12px; /* 🔹 Reduzido de 13px */
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.tool-btn:hover {
+    background: #4a4a4a;
+}
+
+.tool-btn.active {
+    background: #007acc;
+    color: white;
+}
+
+/* ========== DROPDOWNS/MENUS TOGGLE ========== */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: rgba(30, 30, 30, 0.98);
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.6);
+    padding: 10px; /* 🔹 Reduzido de 12px */
+    border-radius: 6px;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    border: 1px solid #444;
+    margin-top: 4px;
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
+.dropdown-content strong {
+    display: block;
+    font-size: 11px; /* 🔹 Reduzido de 12px */
+    color: #fff;
+    margin-bottom: 6px; /* 🔹 Reduzido de 8px */
+    padding-bottom: 4px; /* 🔹 Reduzido de 6px */
+    border-bottom: 1px solid #444;
+}
+
+.dropdown-content span {
+    display: block;
+    font-size: 10px; /* 🔹 Reduzido de 11px */
+    color: #bbb;
+    padding: 3px 0; /* 🔹 Reduzido de 4px */
+    white-space: nowrap;
+}
+
+/* ========== CANVAS 3D ========== */
+.canvas-container {
+    flex: 1;
+    position: relative;
+    background: #1a1a1a;
+}
+
+#canvas3d {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ========== SIDEBAR DE FORMAS (DIREITA) ========== */
+.shapes-sidebar {
+    position: absolute;
+    top: 100px;
+    right: 20px;
+    width: 130px; /* 🔹 Reduzido de 140px */
+    background: rgba(45, 45, 45, 0.95);
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    padding: 10px; /* 🔹 Reduzido de 12px */
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.shapes-sidebar::-webkit-scrollbar {
+    width: 5px; /* 🔹 Reduzido de 6px */
+}
+
+.shapes-sidebar::-webkit-scrollbar-track {
+    background: #1e1e1e;
+    border-radius: 3px;
+}
+
+.shapes-sidebar::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+    border-radius: 3px;
+}
+
+.shapes-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #4a4a4a;
+}
+
+.shapes-sidebar-header {
+    margin-bottom: 10px; /* 🔹 Reduzido de 12px */
+    padding-bottom: 6px; /* 🔹 Reduzido de 8px */
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.shapes-sidebar-header h3 {
+    font-size: 12px; /* 🔹 Reduzido de 13px */
+    color: #fff;
+    margin: 0;
+    font-weight: 600;
+}
+
+.shape-category {
+    margin-bottom: 12px; /* 🔹 Reduzido de 15px */
+}
+
+.category-header {
+    font-size: 9px; /* 🔹 Reduzido de 10px */
+    color: #888;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 6px; /* 🔹 Reduzido de 8px */
+    padding-bottom: 3px; /* 🔹 Reduzido de 4px */
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.shape-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px; /* 🔹 Reduzido de 6px */
+}
+
+.shape-btn-compact {
+    background: #2d2d2d;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 6px; /* 🔹 Reduzido de 8px */
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    color: #e0e0e0;
+}
+
+.shape-btn-compact:hover {
+    background: #3a3a3a;
+    border-color: #007acc;
+    transform: scale(1.05);
+}
+
+.shape-btn-compact:active {
+    transform: scale(0.95);
+}
+
+.shape-icon-compact {
+    font-size: 18px; /* 🔹 Reduzido de 20px */
+}
+
+/* ========== MODAL DE PARÂMETROS ========== */
+.params-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.params-modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: #2d2d2d;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    padding: 20px; /* 🔹 Reduzido de 24px */
+    min-width: 280px; /* 🔹 Reduzido de 300px */
+    max-width: 380px; /* 🔹 Reduzido de 400px */
+}
+
+.modal-header {
+    font-size: 15px; /* 🔹 Reduzido de 16px */
+    font-weight: 600;
+    margin-bottom: 16px; /* 🔹 Reduzido de 20px */
+    color: #fff;
+}
+
+.param-input {
+    margin-bottom: 12px; /* 🔹 Reduzido de 15px */
+}
+
+.param-input label {
+    display: block;
+    font-size: 11px; /* 🔹 Reduzido de 12px */
+    color: #aaa;
+    margin-bottom: 5px; /* 🔹 Reduzido de 6px */
+}
+
+.param-input input {
+    width: 100%;
+    background: #1e1e1e;
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    padding: 7px; /* 🔹 Reduzido de 8px */
+    color: #e0e0e0;
+    font-size: 13px; /* 🔹 Reduzido de 14px */
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 8px; /* 🔹 Reduzido de 10px */
+    margin-top: 16px; /* 🔹 Reduzido de 20px */
+}
+
+.modal-buttons .btn {
+    flex: 1;
+}
+
+
+/* ========== SELETOR DE CORES (COMPACTO) ========== */
+
+.color-palette {
+    display: flex;
+    gap: 6px; /* Espaço entre as bolinhas */
+    flex-wrap: wrap; /* Permite quebrar linha quando encher */
+    margin-bottom: 10px; /* Um respiro em baixo */
+}
+
+.color-option {
+    width: 28px; 
+    height: 28px; 
+    border-radius: 4px;
+    border: 2px solid #3a3a3a;
+    cursor: pointer;
+    transition: transform 0.2s;
+    flex-shrink: 0; /* Garante que não fiquem esmagadas */
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+    border-color: #007acc;
+}
+
+.color-option.active {
+    border-color: #007acc;
+    border-width: 3px;
+}
+
+/* ========== PREVIEW JSON (COMPACTO) ========== */
+.json-preview {
+    background: #1e1e1e;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 10px; /* 🔹 Reduzido de 12px */
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 11px; /* 🔹 Reduzido de 12px */
+    color: #9cdcfe;
+    max-height: 150px; /* 🔹 Reduzido de 200px */
+    overflow-y: auto;
+    white-space: pre;
+}
+
+.json-preview::-webkit-scrollbar {
+    width: 6px; /* 🔹 Reduzido de 8px */
+}
+
+.json-preview::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+.json-preview::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+    border-radius: 4px;
+}
+
+.resolution-btn {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: #bbb;
+    padding: 6px; /* 🔹 Reduzido de 8px */
+    cursor: pointer;
+    font-size: 11px; /* 🔹 Reduzido de 12px */
+}
+
+.resolution-btn:hover {
+    background: #3a3a3a;
+    color: white;
+}
+
+.resolution-btn.active {
+    color: #4ecdc4;
+    font-weight: bold;
+}
+
+/* ========== CAIXA DE SELEÇÃO (BOX SELECT) ========== */
+#selectionBox {
+    position: absolute;
+    border: 2px solid rgba(0, 255, 255, 0.8); /* 🔹 Borda mais visível */
+    background-color: rgba(0, 255, 255, 0.15); /* 🔹 Preenchimento mais visível */
+    pointer-events: none;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); /* 🔹 Efeito de brilho */
+}
+
+/* ========== SEÇÃO EXPANSÍVEL (ACCORDION) ========== */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: #2d2d2d;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: background 0.2s;
+}
+
+.section-header:hover {
+    background: #3a3a3a;
+}
+
+.section-header h4 {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+}
+
+.section-toggle {
+    font-size: 10px;
+    color: #888;
+    transition: transform 0.2s;
+}
+
+.section-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.section-content.expanded {
+    max-height: 1000px;
+}
+
+/* 🔹 NOVO: Dica compacta */
+.compact-tip {
+    padding: 6px 8px;
+    background: #1e1e1e;
+    border-radius: 4px;
+    font-size: 10px;
+    color: #888;
+    border-left: 3px solid #007acc;
+}
+
+/* Container do Sistema de Arquivos */
+.filesystem-container {
+    background: #1a1a1a;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    height: 250px; /* Altura fixa com scroll */
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+/* Barra de Ferramentas (Breadcrumbs + Botões) */
+.fs-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: #252525;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.fs-path {
+    font-size: 11px;
+    color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+    cursor: pointer;
+}
+
+.fs-path:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.fs-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: #e0e0e0;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.btn-icon:hover { background: #3a3a3a; }
+.btn-icon.danger:hover { background: #4a2020; color: #ff6b6b; }
+
+/* Grid de Ícones */
+.fs-grid {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas */
+    gap: 8px;
+    align-content: start;
+}
+
+/* Scrollbar fina para o grid */
+.fs-grid::-webkit-scrollbar { width: 4px; }
+.fs-grid::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 2px; }
+
+/* Item (Pasta ou Arquivo) */
+.fs-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.fs-item:hover {
+    background: #2d2d2d;
+    border-color: #444;
+}
+
+.fs-item.selected {
+    background: #007acc33;
+    border-color: #007acc;
+}
+
+/* Thumbnail do Item */
+.fs-thumbnail {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Canvas gerado dinamicamente para preview */
+.fs-thumbnail canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Nome do Item */
+.fs-name {
+    font-size: 10px;
+    color: #ccc;
+    text-align: center;
+    word-break: break-all;
+    line-height: 1.2;
+    max-width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limita a 2 linhas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.fs-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #555;
+    font-size: 11px;
+    padding-top: 20px;
+    font-style: italic;
+}
