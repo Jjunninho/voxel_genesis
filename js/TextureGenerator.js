@@ -225,50 +225,83 @@ const TextureGenerator = {
             return texture;
         }
 
+
         // =====================================================================
         // MODO 2: PROCEDURAL CLÁSSICO (Perlin Noise, Madeira, Pedra, etc.)
+        // 🔗 CORRIGIDO: agora usa o motor REAL de texturas (texturas/js/),
+        // importado via window.__textureEngine (ver index.html). Antes,
+        // este bloco reimplementava a lógica localmente em getPatternValue/
+        // getColorFromValue, e essa cópia local divergiu da versão corrigida
+        // em texturas/js/renderModes.js (fix de escala da distorção), o que
+        // produzia texturas "salpicadas" nos voxels em vez do padrão suave
+        // visto no gerador de texturas.
         // =====================================================================
         const imageData = ctx.createImageData(size, size);
         const data = imageData.data;
-
+ 
+        const engine = window.__textureEngine;
+        if (!engine) {
+            console.error(
+                "❌ TextureGenerator: window.__textureEngine não encontrado. " +
+                "Verifique se o <script type=\"module\"> de ponte foi carregado " +
+                "no index.html ANTES de js/TextureGenerator.js."
+            );
+            // Fallback: devolve uma textura cinza sólida em vez de travar.
+            ctx.fillStyle = '#888888';
+            ctx.fillRect(0, 0, size, size);
+            const texture = new THREE.CanvasTexture(canvas);
+            this.cache[cacheKey] = texture;
+            return texture;
+        }
+ 
         const params = recipe.parameters || {};
         const colorsRaw = recipe.colors || ['#ffffff', '#aaaaaa', '#555555', '#000000'];
         const colors = colorsRaw.map(c => this.parseColor(c));
-        const primType = recipe.textures?.primary || 'noise';
-        const secType = recipe.textures?.secondary || 'stone';
+        const currentTextures = {
+            primary: recipe.textures?.primary || 'noise',
+            secondary: recipe.textures?.secondary || 'stone'
+        };
+        // O motor real espera params.blendMode/blendAmount dentro do
+        // próprio objeto params (não em recipe.textures.blend como aqui).
+        // Normaliza para o formato esperado sem alterar o objeto original.
+        const engineParams = {
+            ...params,
+            blendMode: recipe.textures?.blend?.mode || params.blendMode,
+            blendAmount: recipe.textures?.blend?.amount ?? params.blendAmount
+        };
+        const renderMode = recipe.renderMode || 'texture';
         const effects = recipe.effects || [];
-
+ 
         for (let y = 0; y < size; y++) {
             for (let x = 0; x < size; x++) {
                 const i = (y * size + x) * 4;
-                
-                const nx = x / size;
-                const ny = y / size;
-
-                const dx = nx + this.noise(x * 0.01, y * 0.01, params.seed) * (params.distortion || 0);
-                const dy = ny + this.noise(x * 0.01, y * 0.01, params.seed + 100) * (params.distortion || 0);
-
-                let v1 = this.getPatternValue(dx * size, dy * size, params, primType);
-                let v2 = this.getPatternValue(dx * size, dy * size, params, secType);
-
-                let value = this.blend(v1, v2, recipe.textures?.blend?.mode, recipe.textures?.blend?.amount);
-
+ 
+                // renderPixel já cobre texture/gradient/solid/pixel/scanlines/
+                // circles/checkerboard/voronoi/hexagons/spiral — o mesmo motor
+                // usado no gerador de texturas, com o fix de escala aplicado.
+                let value = engine.renderPixel(x, y, size, engineParams, currentTextures, renderMode);
+ 
                 effects.forEach(effect => {
-                    value = this.applyEffect(nx, ny, value, effect, params);
+                    value = this.applyEffect(x / size, y / size, value, effect, params);
                 });
-
+ 
                 value = ((value - 0.5) * (params.contrast || 1) + 0.5);
-                
-                const c = this.getColorFromValue(value, recipe.colorMode || 'gradient', colors);
-
+                value = Math.max(0, Math.min(1, value));
+ 
+                const c = engine.getColor(value, recipe.colorMode || 'gradient', colors);
+ 
                 data[i] = c.r;
                 data[i + 1] = c.g;
                 data[i + 2] = c.b;
-                data[i + 3] = 255; 
+                data[i + 3] = 255;
             }
         }
-
+ 
         ctx.putImageData(imageData, 0, 0);
+		
+		    // ⚠️ LEGADO — não é mais chamado pelo Modo 2 (ver window.__textureEngine
+			// acima). Mantido temporariamente para rollback fácil. Pode ser removido
+			// após confirmar que a correção está estável.
 
         const texture = new THREE.CanvasTexture(canvas);
         texture.wrapS = THREE.RepeatWrapping;

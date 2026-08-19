@@ -573,6 +573,19 @@
 		<script src="js/config.js"></script> 
 		 <script src="js/geometries.js"></script> 
 		 <script src="js/geometries_shapes.js"></script>  
+ 
+		 <!-- 🔗 PONTE ES MODULE → GLOBAL
+		      Importa o motor de texturas REAL (texturas/js/) e expõe em
+		      window.__textureEngine para o TextureGenerator.js (script
+		      clássico) consumir. Mantém uma única fonte de verdade para
+		      a lógica procedural, evitando divergência entre o gerador
+		      de texturas e o Voxel Genesis. -->
+		 <script type="module">
+		     import { renderPixel } from './texturas/js/renderModes.js';
+		     import { getColor } from './texturas/js/engine.js';
+		     window.__textureEngine = { renderPixel, getColor };
+		 </script>
+ 
 		 <script src="js/TextureGenerator.js"></script> 
 		 <script src="js/materials.js"></script>
 		 <script src="js/scene.js"></script>   
