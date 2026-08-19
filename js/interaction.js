@@ -122,10 +122,30 @@ function onMouseMove(event) {
 
 function onMouseUp(event) {
     if (isDynamicDrawing) {
+        // Captura valores antes de resetar
+        const snapScale = Math.max(0.1, Math.round(dynamicScale * 10) / 10);
+        const snapRot   = dynamicRotation;
+        const snapPos   = {
+            x: snapToGrid(drawStartPos.x, getGridStep(snapScale)),
+            y: snapToGrid(drawStartPos.y + snapScale / 2, getGridStep(snapScale)),
+            z: snapToGrid(drawStartPos.z, getGridStep(snapScale))
+        };
+
         isDynamicDrawing = false;
-        dynamicScale = 1;
-        dynamicRotation = 0;
-        controls.enabled = true; 
+        dynamicScale     = 1;
+        dynamicRotation  = 0;
+        controls.enabled = true;
+
+        // Remove preview antes de criar o bloco real
+        if (typeof removePreview === 'function') removePreview();
+
+        addBlockAt(
+            snapPos.x, snapPos.y, snapPos.z,
+            currentColor,
+            currentBrushShape,
+            snapScale,
+            { x: currentRotation.x, y: snapRot, z: currentRotation.z }
+        );
         showStatus('✅ Bloco criado!', 'success');
     }
     isDragging = false;
@@ -176,9 +196,26 @@ function onKeyPress(event) {
     }
     
     if (key === 'r') {
+        if (event.ctrlKey || event.metaKey) return; // ← deixa Ctrl+R / Ctrl+Shift+R passarem
         event.preventDefault();
-        if (selectedBlock) rotateSelectedBlock('y', 45);
-        else rotateBrush('y', 90);
+        // Com bloco selecionado: alterna modo do TransformControl (rotate <-> translate)
+        // Sem bloco selecionado: rotaciona o pincel
+        if (selectedBlock || selectedBlocks.length > 0) {
+            if (transformControl) {
+                if (transformControl.getMode() === 'rotate') {
+                    transformControl.setMode('translate');
+                    showStatus('🕹️ Modo: Mover', 'info');
+                } else {
+                    transformControl.setMode('rotate');
+                    showStatus('🔄 Modo: Rotacionar', 'info');
+                }
+            } else {
+                rotateSelectedBlock('y', 45);
+            }
+        } else {
+            rotateBrush('y', 90);
+        }
+        return;
     }
     if (key === 't') {
         event.preventDefault();
@@ -235,18 +272,6 @@ function onKeyPress(event) {
         }
     }
     
-    if (key === 'r' && (selectedBlock || selectedBlocks.length > 0)) {
-        if (transformControl) {
-            if (transformControl.getMode() === 'rotate') {
-                transformControl.setMode('translate');
-                showStatus('🕹️ Modo: Mover (Reset)', 'info');
-            } else {
-                transformControl.setMode('rotate');
-                showStatus('🔄 Modo: Rotacionar', 'info');
-            }
-        }
-    }
-
     if (key === 's') {
         if (transformControl && (selectedBlock || selectedBlocks.length > 0)) {
             if (transformControl.getMode() === 'scale') {
@@ -262,5 +287,32 @@ function onKeyPress(event) {
     if (key === 'd') {
         event.preventDefault();
         if (typeof toggleDebugMode === 'function') toggleDebugMode();
+    }
+
+    // 🎛️ ROTAÇÃO FINA (NUDGE)
+    // Toque único = 1° | Segurado = 5° por tick
+    // [ / ]  → eixo Y   ;  / '  → eixo X   ,  / .  → eixo Z
+    const nudgeMap = {
+        '[': ['y', -1], ']': ['y', +1],
+        ';': ['x', -1], "'": ['x', +1],
+        ',': ['z', -1], '.': ['z', +1],
+    };
+    if (nudgeMap[event.key]) {
+        event.preventDefault();
+        const [axis, sign] = nudgeMap[event.key];
+        const deg = event.repeat ? 5 : 1;
+        const rad = (deg * Math.PI) / 180;
+        if (selectedBlock) {
+            selectedBlock.mesh.rotation[axis] += sign * rad;
+            selectedBlock.rotation[axis] = selectedBlock.mesh.rotation[axis];
+            if (typeof updateSelectionOutline === 'function') updateSelectionOutline();
+            updateJSON();
+            showStatus(`🔄 ${axis.toUpperCase()}: ${Math.round(selectedBlock.rotation[axis] * 180 / Math.PI)}°`, 'info');
+        } else {
+            currentRotation[axis] = (currentRotation[axis] || 0) + sign * rad;
+            if (previewMesh) previewMesh.rotation[axis] = currentRotation[axis];
+            showStatus(`🖌️ Pincel ${axis.toUpperCase()}: ${Math.round(currentRotation[axis] * 180 / Math.PI)}°`, 'info');
+        }
+        return;
     }
 }

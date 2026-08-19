@@ -9,7 +9,10 @@
 // Cole isso no seu core.js substituindo a função existente
 
 function addBlockAt(x, y, z, color, type = 'cube', scale = 1, rotation = {x:0, y:0, z:0}) {
-    const geometry = createGeometry(type);
+	const geometry = (window.ShapeGeometries && window.ShapeGeometries[type])
+		? window.ShapeGeometries[type](window.__shapeGeoParams || {})
+		: createGeometry(type);
+
     
     // 🔥 PRIORIDADE 1: Se existe escala customizada (clonada), ela manda!
     let finalScale = scale;

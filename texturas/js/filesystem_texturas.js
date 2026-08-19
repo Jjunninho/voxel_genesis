@@ -150,13 +150,20 @@ window.FileSystemTextures = {
         const recipe = item.content;
         
         // Extrai parâmetros da receita salva
-        const params = recipe.parameters;
-        const textures = recipe.textures; // {primary, secondary}
-        const colors = recipe.colors.map(c => {
-             // Converte rgb(r,g,b) string ou hex para objeto {r,g,b}
-             if(c.startsWith('#')) return hexToRgb(c);
-             const parts = c.match(/\d+/g);
-             return {r: parseInt(parts[0]), g: parseInt(parts[1]), b: parseInt(parts[2])};
+        const params = recipe.parameters || {};
+        const textures = recipe.textures || { primary: 'stone', secondary: 'noise' };
+
+        // ✅ FIX: recipe.colors pode ser undefined em JSONs importados incompletos
+        const rawColors = Array.isArray(recipe.colors) && recipe.colors.length >= 2
+            ? recipe.colors
+            : ['#888888', '#444444', '#cccccc', '#222222'];
+
+        const colors = rawColors.map(c => {
+            if (!c || typeof c !== 'string') return { r: 128, g: 128, b: 128 };
+            if (c.startsWith('#')) return hexToRgb(c);
+            const parts = c.match(/\d+/g);
+            if (!parts || parts.length < 3) return { r: 128, g: 128, b: 128 };
+            return { r: parseInt(parts[0]), g: parseInt(parts[1]), b: parseInt(parts[2]) };
         });
 
         const imageData = ctx.createImageData(size, size);

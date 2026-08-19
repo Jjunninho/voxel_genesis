@@ -13,10 +13,14 @@ export const renderModes = {
     // MODOS CLÁSSICOS (Mantidos)
     // ========================================
     texture: (x, y, size, params, currentTextures) => {
-        const nx = x / size + noise(x * 0.01, y * 0.01, params.seed) * params.distortion;
-        const ny = y / size + noise(x * 0.01, y * 0.01, params.seed + 100) * params.distortion;
-        let v1 = generateTextureFunction(nx, ny, params, currentTextures.primary);
-        let v2 = generateTextureFunction(nx, ny, params, currentTextures.secondary);
+        // ✅ FIX: distorção em escala de pixel (× size), não normalizada
+        // O engine espera coordenadas brutas (0–size) e faz a divisão por scale internamente.
+        // Antes, nx/ny chegavam como 0–1 e o engine dividia por scale novamente (~50),
+        // resultando em variação mínima (~0.01) que produzia grandes blocos uniformes (quadriculado).
+        const dx = x + noise(x * 0.01, y * 0.01, params.seed)       * params.distortion * size * 0.1;
+        const dy = y + noise(x * 0.01, y * 0.01, params.seed + 100) * params.distortion * size * 0.1;
+        let v1 = generateTextureFunction(dx, dy, params, currentTextures.primary);
+        let v2 = generateTextureFunction(dx, dy, params, currentTextures.secondary);
         let value = blendTextures(v1, v2, params.blendMode, params.blendAmount);
         value += (noise(x * 2, y * 2, params.seed + 200) * 2 - 1) * params.noiseAmount;
         return value;
@@ -36,12 +40,14 @@ export const renderModes = {
 
     pixel: (x, y, size, params, currentTextures) => {
         const pixelSize = 16;
+        // Snap ao grid de pixels (efeito pixel art)
         const px = Math.floor(x / pixelSize) * pixelSize;
         const py = Math.floor(y / pixelSize) * pixelSize;
-        const npx = px / size + noise(px * 0.01, py * 0.01, params.seed) * params.distortion;
-        const npy = py / size + noise(px * 0.01, py * 0.01, params.seed + 100) * params.distortion;
-        let v1 = generateTextureFunction(npx, npy, params, currentTextures.primary);
-        let v2 = generateTextureFunction(npx, npy, params, currentTextures.secondary);
+        // ✅ FIX: coordenadas em pixels (0–size) com distorção proporcional
+        const dpx = px + noise(px * 0.01, py * 0.01, params.seed)       * params.distortion * size * 0.1;
+        const dpy = py + noise(px * 0.01, py * 0.01, params.seed + 100) * params.distortion * size * 0.1;
+        let v1 = generateTextureFunction(dpx, dpy, params, currentTextures.primary);
+        let v2 = generateTextureFunction(dpx, dpy, params, currentTextures.secondary);
         return blendTextures(v1, v2, params.blendMode, params.blendAmount);
     },
 
@@ -51,11 +57,9 @@ export const renderModes = {
 
     // 📺 Scanlines: Linhas CRT horizontais
     scanlines: (x, y, size, params, currentTextures) => {
-        // Usa texture base (sem recursão)
-        const nx = x / size;
-        const ny = y / size;
-        let v1 = generateTextureFunction(nx, ny, params, currentTextures.primary);
-        let v2 = generateTextureFunction(nx, ny, params, currentTextures.secondary);
+        // ✅ FIX: passa coordenadas em pixels (0–size)
+        let v1 = generateTextureFunction(x, y, params, currentTextures.primary);
+        let v2 = generateTextureFunction(x, y, params, currentTextures.secondary);
         let base = blendTextures(v1, v2, params.blendMode, params.blendAmount);
         
         // Frequência das linhas baseada na escala
@@ -79,11 +83,9 @@ export const renderModes = {
         const waveFreq = Math.max(1, params.scale / 20);
         const wave = Math.sin(dist * waveFreq * Math.PI / size) * 0.5 + 0.5;
         
-        // Base textura
-        const nx = x / size;
-        const ny = y / size;
-        let v1 = generateTextureFunction(nx, ny, params, currentTextures.primary);
-        let v2 = generateTextureFunction(nx, ny, params, currentTextures.secondary);
+        // ✅ FIX: passa coordenadas em pixels (0–size)
+        let v1 = generateTextureFunction(x, y, params, currentTextures.primary);
+        let v2 = generateTextureFunction(x, y, params, currentTextures.secondary);
         let base = blendTextures(v1, v2, params.blendMode, params.blendAmount);
         
         return base * (0.5 + wave * 0.5);
@@ -101,11 +103,9 @@ export const renderModes = {
         const cy = Math.floor(distY / checkSize);
         const check = (cx + cy) % 2 === 0 ? 0.3 : 0.7;
         
-        // Base textura
-        const nx = x / size;
-        const ny = y / size;
-        let v1 = generateTextureFunction(nx, ny, params, currentTextures.primary);
-        let v2 = generateTextureFunction(nx, ny, params, currentTextures.secondary);
+        // ✅ FIX: passa coordenadas em pixels (0–size)
+        let v1 = generateTextureFunction(x, y, params, currentTextures.primary);
+        let v2 = generateTextureFunction(x, y, params, currentTextures.secondary);
         let base = blendTextures(v1, v2, params.blendMode, params.blendAmount);
         
         return base * check;
@@ -144,11 +144,9 @@ export const renderModes = {
         // Normaliza distância
         const pattern = Math.min(1, minDist / (cellSize * 0.7));
         
-        // Base textura
-        const nx = x / size;
-        const ny = y / size;
-        let v1 = generateTextureFunction(nx, ny, params, currentTextures.primary);
-        let v2 = generateTextureFunction(nx, ny, params, currentTextures.secondary);
+        // ✅ FIX: passa coordenadas em pixels (0–size)
+        let v1 = generateTextureFunction(x, y, params, currentTextures.primary);
+        let v2 = generateTextureFunction(x, y, params, currentTextures.secondary);
         let base = blendTextures(v1, v2, params.blendMode, params.blendAmount);
         
         return base * (0.5 + pattern * 0.5);
@@ -174,11 +172,9 @@ export const renderModes = {
         // val varia de -3 a +3, normalizamos para 0-1
         const pattern = Math.max(0, Math.min(1, (val + 3) / 6));
         
-        // Base textura
-        const nx = x / size;
-        const ny = y / size;
-        let v1 = generateTextureFunction(nx, ny, params, currentTextures.primary);
-        let v2 = generateTextureFunction(nx, ny, params, currentTextures.secondary);
+        // ✅ FIX: passa coordenadas em pixels (0–size)
+        let v1 = generateTextureFunction(x, y, params, currentTextures.primary);
+        let v2 = generateTextureFunction(x, y, params, currentTextures.secondary);
         let base = blendTextures(v1, v2, params.blendMode, params.blendAmount);
         
         return base * (0.3 + pattern * 0.7);
@@ -198,11 +194,9 @@ export const renderModes = {
         const spiralFreq = Math.max(1, params.scale / 30);
         const spiralVal = Math.sin((dist * 0.05) + (angle * spiralFreq)) * 0.5 + 0.5;
         
-        // Base textura
-        const nx = x / size;
-        const ny = y / size;
-        let v1 = generateTextureFunction(nx, ny, params, currentTextures.primary);
-        let v2 = generateTextureFunction(nx, ny, params, currentTextures.secondary);
+        // ✅ FIX: passa coordenadas em pixels (0–size)
+        let v1 = generateTextureFunction(x, y, params, currentTextures.primary);
+        let v2 = generateTextureFunction(x, y, params, currentTextures.secondary);
         let base = blendTextures(v1, v2, params.blendMode, params.blendAmount);
         
         return base * (0.4 + spiralVal * 0.6);

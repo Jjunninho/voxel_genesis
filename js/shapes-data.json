@@ -1,0 +1,191 @@
+{
+  "categories": [
+    {
+      "id": "basicas",
+      "label": "Básicas",
+      "shapes": [
+        { "key": "cube",  "icon": "⬛", "title": "Cubo" },
+        { "key": "plane", "icon": "⬜", "title": "Plano" }
+      ]
+    },
+    {
+      "id": "solidos",
+      "label": "Sólidos",
+      "shapes": [
+        { "key": "sphere",           "icon": "⚪",  "title": "Esfera"                  },
+        { "key": "cylinder",         "icon": "🛢️", "title": "Cilindro"                },
+        { "key": "cone",             "icon": "🔺",  "title": "Cone"                    },
+        { "key": "torus",            "icon": "🍩",  "title": "Toro"                    },
+        { "key": "tetrahedron_v2",   "icon": "▲",   "title": "Tetraedro (Preciso)"     },
+        { "key": "octahedron_v2",    "icon": "◆",   "title": "Octaedro (Preciso)"      },
+        { "key": "dodecahedron_v2",  "icon": "⬟",   "title": "Dodecaedro (Preciso)"    },
+        { "key": "icosahedron_v2",   "icon": "◈",   "title": "Icosaedro (Preciso)"     }
+      ]
+    },
+    {
+      "id": "platonicos",
+      "label": "Sólidos Platônicos",
+      "shapes": [
+        { "key": "tetrahedron",  "icon": "▲",  "title": "Tetraedro" },
+        { "key": "hexahedron",   "icon": "🧊",  "title": "Hexaedro (Cubo)" },
+        { "key": "octahedron",   "icon": "◆",  "title": "Octaedro" },
+        { "key": "dodecahedron", "icon": "⬟",  "title": "Dodecaedro" },
+        { "key": "icosahedron",  "icon": "◈",  "title": "Icosaedro" }
+      ]
+    },
+    {
+      "id": "arquitetura",
+      "label": "Arquitetura",
+      "shapes": [
+        { "key": "pyramid",      "icon": "🔺",  "title": "Pirâmide" },
+        { "key": "stairs",       "icon": "🔶",  "title": "Escada" },
+        { "key": "arch",         "icon": "🌉",  "title": "Arco" },
+        { "key": "tower",        "icon": "🗼",  "title": "Torre" },
+        { "key": "spiralStairs", "icon": "🌀",  "title": "Escada Espiral" },
+        { "key": "dome",         "icon": "🏟️", "title": "Domo" },
+        { "key": "tree",         "icon": "🌲",  "title": "Árvore" },
+        { "key": "castle",       "icon": "🏰",  "title": "Castelo" },
+        { "key": "bridge",       "icon": "🌉",  "title": "Ponte" },
+        { "key": "lShapedStairs","icon": "↩️",  "title": "Escada em L" },
+        { "key": "figurine",     "icon": "🕴️", "title": "Estatueta" },
+		{ "key": "egypt_pyramid", "icon": "🏺", "title": "Pirâmide do Egito" }
+      ]
+    },
+    {
+      "id": "sagrada",
+      "label": "Geometria Sagrada",
+      "shapes": [
+        { "key": "metatrons_cube", "icon": "🔯", "title": "Cubo de Metatron" },
+        { "key": "flower_of_life", "icon": "🌸", "title": "Flor da Vida" },
+        { "key": "seed_of_life",   "icon": "🌼", "title": "Semente da Vida" },
+        { "key": "sri_yantra",     "icon": "🕉️","title": "Sri Yantra" },
+        { "key": "vesica_piscis",  "icon": "♓", "title": "Vesica Piscis" }
+      ]
+    },
+    {
+      "id": "fractais",
+      "label": "Fractais Avançados",
+      "shapes": [
+        { "key": "sierpinski_pyramid", "icon": "🔺", "title": "Pirâmide de Sierpinski" },
+        { "key": "dragon_curve_3d",    "icon": "🐉", "title": "Curva do Dragão 3D" },
+        { "key": "hilbert_curve",      "icon": "🔄", "title": "Curva de Hilbert 3D" },
+        { "key": "julia_set",          "icon": "🌊", "title": "Conjunto de Julia 3D" },
+        { "key": "apollonian_gasket",  "icon": "⚪", "title": "Gasket Apoloniano" }
+      ]
+    },
+    {
+      "id": "matematicas",
+      "label": "Matemáticas",
+      "shapes": [
+        { "key": "helix",            "icon": "🌀", "title": "Hélice" },
+        { "key": "wave",             "icon": "🌊", "title": "Onda" },
+        { "key": "fractalTree",      "icon": "🎋", "title": "Árvore Fractal" },
+        { "key": "dnaHelix",         "icon": "🧬", "title": "Hélice de DNA" },
+        { "key": "heart",            "icon": "❤️", "title": "Coração" },
+        { "key": "star",             "icon": "⭐", "title": "Estrela" },
+        { "key": "maze",             "icon": "🧩", "title": "Labirinto" },
+        { "key": "crystal",          "icon": "💎", "title": "Cristal" },
+        { "key": "hollowCylinder",   "icon": "⭕", "title": "Cilindro Oco" },
+        { "key": "rectangularPrism", "icon": "⬜", "title": "Paralelepípedo" },
+        { "key": "hollowSphere",     "icon": "🔮", "title": "Esfera Oca" },
+        { "key": "hollowCone",       "icon": "🌪️","title": "Cone Oco" },
+        { "key": "hexagon",          "icon": "⬢", "title": "Hexágono" }
+      ]
+    },
+    {
+      "id": "abstratas",
+      "label": "Abstratas & Matemáticas",
+      "shapes": [
+        { "key": "knot",        "icon": "🎗️", "title": "Nó Toroidal" },
+        { "key": "mobius",      "icon": "🌀",  "title": "Fita de Möbius" },
+        { "key": "klein_bottle","icon": "🧪",  "title": "Garrafa de Klein" },
+        { "key": "pentagram",   "icon": "⭐",  "title": "Pentagrama 3D" },
+        { "key": "mandala",     "icon": "☸️",  "title": "Mandala 3D" },
+        { "key": "fractal_cube","icon": "🧊",  "title": "Cubo de Menger" },
+        { "key": "tessellation","icon": "🧩",  "title": "Tesselação 3D" }
+      ]
+    },
+    {
+      "id": "construcoes",
+      "label": "Construções",
+      "shapes": [
+        { "key": "proceduralBuilding", "icon": "🏢", "title": "Edifício Modular" },
+        { "key": "proceduralHouse",    "icon": "🏠", "title": "Casa Procedural" },
+        { "key": "temple",             "icon": "⛪", "title": "Templo / Catedral" },
+        { "key": "vault",              "icon": "🏛️","title": "Abóbada" },
+        { "key": "lighthouse",         "icon": "🗼", "title": "Farol" },
+        { "key": "windmill",           "icon": "🏰", "title": "Moinho de Vento" },
+        { "key": "well",               "icon": "🚰", "title": "Poço" },
+        { "key": "gazebo",             "icon": "⛺", "title": "Gazebo" },
+        { "key": "fountain",           "icon": "⛲", "title": "Fonte" },
+		{ "key": "iglu",               "icon": "🧊", "title": "Iglu" },
+		{ "key": "casebre",            "icon": "🛖", "title": "Casebre" },
+		{ "key": "chale",              "icon": "🏔️", "title": "Chalé Suíço" }
+      ]
+    },
+    {
+      "id": "natureza",
+      "label": "Natureza",
+      "shapes": [
+        { "key": "cactus",    			"icon": "🌵", "title": "Cacto" },
+        { "key": "palm",      			"icon": "🌴", "title": "Palmeira" },
+        { "key": "flower",    			"icon": "🌸", "title": "Flor" },
+        { "key": "bush",      			"icon": "🌿", "title": "Arbusto" },
+        { "key": "pinecone",  			"icon": "🌰", "title": "Pinha" },
+        { "key": "rock",      			"icon": "🪨", "title": "Rocha" },
+        { "key": "mushroom",  			"icon": "🍄", "title": "Cogumelo" },
+        { "key": "coral",     			"icon": "🪸", "title": "Coral" },
+        { "key": "fallenLog", 			"icon": "🪵", "title": "Tronco Caído" },
+        { "key": "reed",      			"icon": "🌾", "title": "Junco" },
+		{ "key": "ipe",      			"icon": "🌺", "title": "Ipê" },
+		{ "key": "acacia",   			"icon": "🌳", "title": "Acácia" },
+		{ "key": "araucaria",			"icon": "🎄", "title": "Araucária" },
+		{ "key": "baoba",    			"icon": "🌵", "title": "Baobá" },
+		{ "key": "arbusto_mini",  		"icon": "🌿", "title": "Arbusto Minimalista" },
+		{ "key": "carvalho_mini", 		"icon": "🌳", "title": "Carvalho Minimalista" },
+		{ "key": "macieira_mini", 		"icon": "🍎", "title": "Macieira Minimalista" },
+		{ "key": "bonsai",        		"icon": "🎋", "title": "Bonsai" },
+		{ "key": "cerejeira",     		"icon": "🌸", "title": "Cerejeira" }
+      ]
+    },
+    {
+      "id": "organicas",
+      "label": "Orgânicas",
+      "shapes": [
+        { "key": "rock_2",       "icon": "🪨", "title": "Pedreira" },
+        { "key": "mushroom_2",   "icon": "🍄", "title": "Cogumelo Gigante" },
+        { "key": "coral_colony", "icon": "🪸", "title": "Coral / Colônia" },
+        { "key": "organicArch",  "icon": "🏜️","title": "Arco Natural" }
+      ]
+    },
+    {
+      "id": "geometria_avancada",
+      "label": "Geometria Avançada",
+      "shapes": [
+        { "key": "superquadric",       "icon": "🔷",  "title": "Superquadric"              },
+        { "key": "implicitSurface",    "icon": "∿",   "title": "Superfície Implícita"      },
+        { "key": "gyroid",             "icon": "🧠",  "title": "Gyroid"                    },
+        { "key": "sticks_pile",        "icon": "🥢",  "title": "Pilha de Varetas"          },
+        { "key": "schwartz_p",         "icon": "🫧",  "title": "Schwartz P (Lattice)"      },
+        { "key": "schwartz_d",         "icon": "🕸️", "title": "Schwartz D (Diamante)"     },
+        { "key": "hyperboloid",        "icon": "🌀",  "title": "Hiperbolóide"              },
+        { "key": "nodal_surface",      "icon": "🔬",  "title": "Superfície Nodal"          },
+        { "key": "lemniscate_3d",      "icon": "♾️", "title": "Lemniscata 3D"             },
+        { "key": "voronoi_columns",    "icon": "🏛️", "title": "Colunas Voronoi"           },
+        { "key": "torus_knot_surface", "icon": "🪢",  "title": "Nó Toroidal Volumétrico"   },
+        { "key": "seifert_surface",    "icon": "🌐",  "title": "Superfície de Seifert"     },
+        { "key": "oloid",              "icon": "🥚",  "title": "Olóide"                    },
+        { "key": "reaction_diffusion", "icon": "🧫",  "title": "Reação-Difusão (Turing)"   }
+      ]
+    },
+    {
+      "id": "sistemicas",
+      "label": "Sistêmicas",
+      "shapes": [
+        { "key": "ruins",       "icon": "🏚️", "title": "Ruínas Procedurais" },
+        { "key": "dungeon",     "icon": "🗝️", "title": "Dungeon Modular" },
+        { "key": "platformSet", "icon": "🧱",  "title": "Plataformas" }
+      ]
+    }
+  ]
+}

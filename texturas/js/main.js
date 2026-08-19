@@ -1,6 +1,6 @@
 // js/main.js - VERSÃO COM IA INTEGRADA, MODULAR E FILE SYSTEM
 import { texturePresets } from './presets.js';
-import { generateTextureFunction, applyEffect, blendTextures, getColor } from './engine.js';
+import { applyEffect, getColor } from './engine.js';
 import { noise, hexToRgb, calculateImageVariance } from './utils.js';
 import { generateTextureFromAI, getSuggestedPrompts } from './api.js';
 import { renderPixel, shouldValidateSaturation } from './renderModes.js';
@@ -62,6 +62,7 @@ let activeEffects = new Set();
 let proceduralRecipe = null;
 let currentRenderMode = 'texture';
 let tilingEnabled = false;
+let colorsLocked = false; // 🔒 Segurar Cores
 
 // ====================================================================
 // 🔄 TOGGLE TILING
@@ -175,6 +176,21 @@ Object.keys(inputs).forEach(key => {
 randomSeedBtn.addEventListener('click', () => {
     const newSeed = Math.floor(Math.random() * 9999999) + 1;
     inputs.seed.value = newSeed;
+    if (displays.scaleValue) displays.scaleValue.textContent; // forçar atualização visual
+    generateTexture(); // ✅ FIX: regera textura com a nova seed
+});
+
+// ====================================================================
+// 🔒 SEGURAR CORES — listener do checkbox
+// ====================================================================
+const lockColorsCheckbox = document.getElementById('lockColors');
+const lockColorsLabel    = document.getElementById('lockColorsLabel');
+const colorGrid          = document.querySelector('.color-grid');
+
+lockColorsCheckbox.addEventListener('change', () => {
+    colorsLocked = lockColorsCheckbox.checked;
+    lockColorsLabel.classList.toggle('locked', colorsLocked);
+    colorGrid.classList.toggle('colors-locked', colorsLocked);
 });
 
 // ====================================================================
@@ -194,11 +210,14 @@ function setRandomValues() {
     document.querySelectorAll('[data-type="secondary"]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.texture === randomSecondary.id);
     });
-    
-    inputs.color1.value = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-    inputs.color2.value = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-    inputs.color3.value = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-    inputs.color4.value = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+
+    // 🔒 Só randomiza cores se NÃO estiver travado
+    if (!colorsLocked) {
+        inputs.color1.value = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        inputs.color2.value = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        inputs.color3.value = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        inputs.color4.value = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+    }
     
     inputs.scale.value = Math.floor(Math.random() * 195) + 5;
     inputs.noiseAmount.value = Math.random().toFixed(2);
@@ -338,56 +357,194 @@ downloadBtn.addEventListener('click', () => {
 });
 
 // ====================================================================
-// 📄 DOWNLOAD JSON + SALVAR NO FILE SYSTEM
+// 💾 DOWNLOAD JSON — só baixa o arquivo, nada mais
 // ====================================================================
 downloadJsonBtn.addEventListener('click', () => {
     if (!proceduralRecipe) return;
-    
-    // 1. Download do arquivo JSON
+
+    const name = `texture-${currentTextures.primary}-${currentTextures.secondary}-${Date.now()}`;
     const jsonString = JSON.stringify(proceduralRecipe, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    
-    const name = `texture-${currentTextures.primary}-${currentTextures.secondary}`;
-    
-    link.download = `${name}-${Date.now()}.json`;
+    link.download = `${name}.json`;
     link.href = url;
     link.click();
     URL.revokeObjectURL(url);
-    
-    // 2. SALVAR NO FILE SYSTEM LOCAL
-    if (window.FileSystemTextures) {
-        window.FileSystemTextures.saveTexture(proceduralRecipe, name);
-        
-        // Feedback visual
-        downloadJsonBtn.textContent = '✅ Salvo!';
-        downloadJsonBtn.style.background = 'linear-gradient(135deg, #00ff88, #00aaff)';
-        setTimeout(() => {
-            downloadJsonBtn.textContent = '📄 Baixar JSON';
-            downloadJsonBtn.style.background = '';
-        }, 2000);
-    }
+
+    // Feedback rápido
+    downloadJsonBtn.textContent = '✅ Baixado!';
+    downloadJsonBtn.style.background = 'linear-gradient(135deg, #00aaff, #0077cc)';
+    setTimeout(() => {
+        downloadJsonBtn.textContent = '📄 Baixar JSON';
+        downloadJsonBtn.style.background = '';
+    }, 2000);
 });
 
 // ====================================================================
-// 📋 COPIAR JSON
+// 📋 COPIAR RECEITA → salva no Voxel Genesis (voxel_fs_data) + cópia local
 // ====================================================================
-copyJsonBtn.addEventListener('click', async () => {
+copyJsonBtn.addEventListener('click', () => {
     if (!proceduralRecipe) return;
-    
-    const jsonString = JSON.stringify(proceduralRecipe, null, 2);
-    
-    try {
-        await navigator.clipboard.writeText(jsonString);
-        copyJsonBtn.textContent = '✅ Copiado!';
-        setTimeout(() => {
-            copyJsonBtn.textContent = '📋 Copiar Receita';
-        }, 2000);
-    } catch (err) {
-        alert('Erro ao copiar. Copie manualmente do preview abaixo.');
+
+    const name = `texture-${currentTextures.primary}-${currentTextures.secondary}`;
+
+    // ── 1. Salva no FileSystem do Voxel Genesis (localStorage: voxel_fs_data) ──
+    const saved = saveToVoxelGenesis(proceduralRecipe, name);
+
+    // ── 2. Salva cópia no FileSystem LOCAL do DJ de Texturas ──
+    if (window.FileSystemTextures) {
+        window.FileSystemTextures.saveTexture(proceduralRecipe, name);
     }
+
+    // ── 3. Feedback visual ──
+    if (saved) {
+        copyJsonBtn.textContent = '✅ Enviado ao Voxel Genesis!';
+        copyJsonBtn.style.background = 'linear-gradient(135deg, #00ff88, #00cc66)';
+        copyJsonBtn.style.color = '#1a1a1a';
+        showSaveToast(name);
+    } else {
+        copyJsonBtn.textContent = '⚠️ Erro ao salvar';
+        copyJsonBtn.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
+    }
+
+    setTimeout(() => {
+        copyJsonBtn.textContent = '📋 Copiar Receita';
+        copyJsonBtn.style.background = '';
+        copyJsonBtn.style.color = '';
+    }, 3000);
 });
+
+// ====================================================================
+// 🔗 SALVAR NO VOXEL GENESIS — escreve direto em voxel_fs_data
+// ====================================================================
+function saveToVoxelGenesis(recipe, suggestedName) {
+    try {
+        // Lê o estado atual do filesystem do Voxel Genesis
+        const raw = localStorage.getItem('voxel_fs_data');
+        let fsData = raw ? JSON.parse(raw) : null;
+
+        // Se não existir ainda (usuário nunca abriu o Voxel Genesis), cria a estrutura mínima
+        if (!fsData || !fsData.root) {
+            fsData = {
+                root: {
+                    id: 'root',
+                    name: 'Raiz',
+                    type: 'folder',
+                    children: [
+                        { id: 'sys_folder_textures', name: '🎨 Minhas Texturas', type: 'folder', children: [] },
+                        { id: 'sys_folder_projects', name: '📂 Meus Projetos',  type: 'folder', children: [] }
+                    ]
+                }
+            };
+        }
+
+        // Garante que a pasta Minhas Texturas existe
+        let texturesFolder = findFolderById(fsData.root, 'sys_folder_textures');
+        if (!texturesFolder) {
+            texturesFolder = { id: 'sys_folder_textures', name: '🎨 Minhas Texturas', type: 'folder', children: [] };
+            fsData.root.children.unshift(texturesFolder);
+        }
+
+        // Evita nome duplicado: acrescenta contador se necessário
+        let finalName = suggestedName;
+        let counter = 1;
+        while (texturesFolder.children.find(c => c.name === finalName && c.type === 'file')) {
+            finalName = `${suggestedName} (${counter++})`;
+        }
+
+        // Insere o arquivo
+        texturesFolder.children.push({
+            id: 'tex_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+            name: finalName,
+            type: 'file',
+            fileType: 'texture',
+            content: recipe,
+            createdAt: new Date().toISOString(),
+            source: 'DJ das Texturas'
+        });
+
+        // Persiste
+        localStorage.setItem('voxel_fs_data', JSON.stringify(fsData));
+        console.log(`✅ Textura "${finalName}" salva em Voxel Genesis > Minhas Texturas`);
+        return finalName;
+
+    } catch (err) {
+        console.error('Erro ao salvar no Voxel Genesis:', err);
+        return null;
+    }
+}
+
+// Busca recursiva de pasta por id
+function findFolderById(node, id) {
+    if (node.id === id) return node;
+    if (node.children) {
+        for (const child of node.children) {
+            if (child.type === 'folder') {
+                const found = findFolderById(child, id);
+                if (found) return found;
+            }
+        }
+    }
+    return null;
+}
+
+// ====================================================================
+// 🍞 TOAST — confirmação visual discreta
+// ====================================================================
+function showSaveToast(name) {
+    // Remove toast anterior se existir
+    const existing = document.getElementById('vgToast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'vgToast';
+    toast.innerHTML = `
+        <span style="font-size:18px">✅</span>
+        <div>
+            <strong style="display:block;font-size:13px">Salvo no Voxel Genesis!</strong>
+            <span style="font-size:11px;opacity:0.8">🎨 Minhas Texturas → ${name}</span>
+        </div>
+    `;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #1a2a1a, #0d1a0d);
+        border: 1px solid #00ff88;
+        border-radius: 10px;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #fff;
+        font-family: inherit;
+        box-shadow: 0 4px 20px rgba(0,255,136,0.25);
+        z-index: 9999;
+        animation: toastIn 0.3s ease;
+        max-width: 320px;
+    `;
+
+    // Keyframe da animação
+    if (!document.getElementById('toastStyle')) {
+        const style = document.createElement('style');
+        style.id = 'toastStyle';
+        style.textContent = `
+            @keyframes toastIn {
+                from { transform: translateY(20px); opacity: 0; }
+                to   { transform: translateY(0);    opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.transition = 'opacity 0.4s';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
+}
 
 // ====================================================================
 // ✨ EFEITOS ESPECIAIS
@@ -579,7 +736,7 @@ generateAiBtn.addEventListener('click', async () => {
         showAIStatus(result.message, 'success');
         
         // Atualiza título com stats
-        const infoContainer = document.querySelector('.canvas-wrapper h3');
+        const infoContainer = document.getElementById('canvasTitle');
         const cor = result.attempts > 3 ? '#ffaa00' : '#00ff88';
         infoContainer.innerHTML = `
             Visualização via IA 
@@ -644,7 +801,7 @@ function initializeWithBeautifulTexture() {
     if (variance >= 5) {
         console.log(`✅ Textura inicial gerada com sucesso na tentativa ${attempts}! Variância: ${variance.toFixed(2)}`);
         
-        const infoContainer = document.querySelector('.canvas-wrapper h3');
+        const infoContainer = document.getElementById('canvasTitle');
         const cor = attempts > 5 ? '#ffaa00' : '#00ff88';
         infoContainer.innerHTML = `
             Visualização 

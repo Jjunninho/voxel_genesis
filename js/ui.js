@@ -83,7 +83,12 @@ function setTool(tool) {
     
     // 🆕 GUARDA A FERRAMENTA ANTERIOR ANTES DE MUDAR
     const previousTool = currentTool;
-    
+
+    // Reset da escala clonada ao sair do modo add
+    if (tool !== 'add') {
+        window.customBrushScale = null;
+    }
+
     currentTool = tool;
     
     // Atualiza visual dos botões
@@ -331,6 +336,12 @@ function loadProjectData(jsonData) {
     }
     
     // Restaura Blocos
+    // Suspende o histórico durante a carga para não poluir o undoStack
+    // (cada addBlockAt empurraria uma entrada — um projeto de 300 blocos
+    // derrubaria o limite de 50 e deixaria o Ctrl+Z desfazendo a carga)
+    const _undoPush = Array.prototype.push;
+    undoStack.push = () => {}; // desativa temporariamente
+
     let loadedCount = 0;
     const DEG2RAD = Math.PI / 180;
 
@@ -354,6 +365,11 @@ function loadProjectData(jsonData) {
             loadedCount++;
         }
     });
+
+    // Restaura o push e limpa qualquer entrada que tenha escapado
+    undoStack.push = _undoPush;
+    undoStack.length = 0;
+    redoStack.length = 0;
     
     updateJSON();
     showStatus(`✅ Projeto carregado! ${loadedCount} blocos.`, 'success');
@@ -599,6 +615,12 @@ function openShapeModal(shapeType) {
         shape.params.forEach(param => {
             currentParams[param.name] = param.default;
 
+            // Detecta se o parâmetro é float ou inteiro pelo default/min/max
+            const isFloat = !Number.isInteger(param.default)
+                         || !Number.isInteger(param.min)
+                         || !Number.isInteger(param.max);
+            const step = isFloat ? (param.step || 0.01) : (param.step || 1);
+
             const div = document.createElement('div');
             div.className = 'param-input';
             div.innerHTML = `
@@ -609,6 +631,7 @@ function openShapeModal(shapeType) {
                     value="${param.default}" 
                     min="${param.min}" 
                     max="${param.max}"
+                    step="${step}"
                     onchange="updateParam('${param.name}', this.value)"
                 />
             `;
@@ -627,7 +650,8 @@ function closeShapeModal() {
 }
 
 function updateParam(paramName, value) {
-    currentParams[paramName] = parseInt(value);
+    const parsed = parseFloat(value);
+    currentParams[paramName] = isNaN(parsed) ? 0 : parsed;
 }
 
 document.addEventListener('click', (e) => {

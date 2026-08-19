@@ -9,7 +9,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>🌌 Voxel Genesis IA<br>🎨 DJ das Texturas</h1>
+        <h1>
+			🌌 <span class="title-gradient">Voxel Genesis IA</span><br>
+			🎨 <span class="title-gradient">DJ das Texturas</span>
+		</h1>
         <p class="subtitle">Crie texturas únicas e multicor com mistura, ruído e efeitos especiais</p>
 
         <div class="info-box">
@@ -169,6 +172,13 @@
                     </div>
                 </div>
 
+                <!-- 🔒 SEGURAR CORES -->
+                <label class="lock-colors-label" id="lockColorsLabel">
+                    <input type="checkbox" id="lockColors">
+                    <span class="lock-colors-checkmark"></span>
+                    <span class="lock-colors-text">🔒 Segurar Cores</span>
+                </label>
+
                 <div class="control-group">
                     <label>Modo de Cores:</label>
                     <select id="colorMode">
@@ -244,7 +254,7 @@
 
         <div class="canvas-container" id="canvasContainer" style="display: none;">
             <div class="canvas-wrapper">
-                <h3>Visualização da Textura</h3>
+                <h3 id="canvasTitle">Visualização da Textura</h3>
                 <canvas id="previewCanvas"></canvas>
                 <button id="downloadBtn" class="download-btn" style="margin-top: 10px;">
                     💾 Baixar PNG
@@ -262,7 +272,7 @@
             </div>
         </div>
 		
-		<div class="container" style="margin-top: 30px;">
+		<div class="biblioteca-section" style="margin-top: 30px;">
         <div class="info-box" style="border-left-color: #00aaff;">
             <h3>🗂️ Minha Biblioteca Local</h3>
             <p>Seus JSONs salvos ficam aqui. Clique duplo para carregar uma receita de volta ao editor.</p>
@@ -285,7 +295,9 @@
                 <div class="fs-empty">Carregando biblioteca...</div>
             </div>
         </div>
-    </div>
+    </div><!-- /.biblioteca-section -->
+
+    </div><!-- /.container principal -->
 
    <script type="module" src="texturas/js/filesystem_texturas.js"></script>
    <script type="module" src="texturas/js/main.js"></script>

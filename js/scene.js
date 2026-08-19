@@ -40,8 +40,7 @@ function init() {
     scene.add(directionalLight);
 
 	// 5. Helpers (Grid & Axes)
-	// 🔥 AGORA COM 1000 UNIDADES E 100 DIVISÕES (ESTILO VOXELIZER)
-	gridHelper = new THREE.GridHelper(1000, 100, 0x444444, 0x222222);
+	gridHelper = new THREE.GridHelper(80, 80, 0x444444, 0x222222);
 	scene.add(gridHelper);
 
 	axesHelper = new THREE.AxesHelper(10);
